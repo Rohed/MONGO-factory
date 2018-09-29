@@ -35,6 +35,45 @@ return list;
 }
 
 
+var IDENTIFIERS = {
+  BottleTypes : "sku",
+ Boxes : "sku",
+ BrandedTypes : "sku",
+ Brands : "sku",
+ Color : "sku",
+ Customers : "sku",
+ FillLevels : "sku",
+ FlavourMixes :"sku",
+ FlavourMixOrders : "batch",
+ Flavours : "sku",
+ highestBatch :"batch",
+ Inventory : "key",
+ Labelling : "batch",
+ Labels : "sku",
+ Lids : "sku",
+ Log : "id",
+ Machines : "sku",
+ Misc : "name",
+ Mixing : "batch",
+ MixingTeam : "batch",
+ Orders : "batch",
+ Packages : "sku",
+ Packaging : "batch",
+ PremixColoring : "batch",
+ PremixesTypes : "sku",
+ Printing : "batch",
+ Production : "batch",
+ Recipes : "id",
+ References : "productcode",
+ SchedulesBreaks : "day",
+ SchedulesReference : "id",
+ Schedules : "id",
+ Shipping : "batch",
+ UnbrandedTypes : "sku",
+ importBlankPCPD : "key",
+ times : "id",
+};
+
 function jsonConcat(o1, o2) {
  for (var key in o2) {
   o1[key] = o2[key];
@@ -70,9 +109,26 @@ function JSONtoARR(data) {
   
 }
 
+const ARRtoJSON = function(data, page) {
+  if (data) {
+    var obj = {};
+
+    data.map(function(item) {
+      if (item[IDENTIFIERS[page]]) {
+        obj[item[IDENTIFIERS[page]]] = item;
+      }
+    });
+
+    return obj;
+  } else {
+    return {};
+  }
+};
+
 function getBrandName(data,BB){
   if(BB){
-  var dat=base.getData('References/ProductCodes/'+data.productcode+'/linkedBB');
+  var fullProd =base.getData('References/'+data.productcode);
+  var dat = fullProd.linkedBB;
   if(dat){
   return dat;
   }else{
@@ -85,13 +141,13 @@ function getBrandName(data,BB){
 }
 
 function getUnbrandName(data){
- var dat=base.getData('References/ProductCodes/'+data.productcode);
+ var dat=base.getData('References/'+data.productcode);
  generateForSingleUnbrand2(dat.unbrandSKU, dat.unbranddescr);
 return dat.unbrandSKU;
 }
 
 function getPremixSKU(data,colored){
- var dat=base.getData('References/ProductCodes/'+data.productcode);
+ var dat=base.getData('References/'+data.productcode);
 
    
  
@@ -145,7 +201,7 @@ return JSONtoARR(data).sort(sortSTRINGLH('name'));//.sort(superSort1('name'));
 
 function getCustomerDropdown(){
 
-var data=JSONtoARR(base.getData('Customers')).sort(sortSTRINGLH('name'));
+var data=base.getData('Customers').sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 
 
@@ -155,7 +211,7 @@ return data;//.sort(superSort1('name'));
 
 function getPackagingDropdown(){
 
-var data=JSONtoARR(base.getData('Packages'));
+var data=base.getData('Packages');
 
 
 return data.sort(sortSTRINGLH('name'));
@@ -168,25 +224,25 @@ return data.sort(sortSTRINGLH('name'));
 
 
 function getLidDropdown(){
-var data=JSONtoARR(base.getData('Lids')).sort(sortSTRINGLH('name'));
+var data=base.getData('Lids').sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 
 }
 
 
 function getLidDropdown2(){
-var data=JSONtoARR(base.getData('Lids')).sort(sortSTRINGLH('name'));
+var data=base.getData('Lids').sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 }
 function getBottlesDropdown2(){
 
-var data=JSONtoARR(base.getData('BottleTypes')).sort(sortSTRINGLH('name'));
+var data=base.getData('BottleTypes').sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 
 }
 function getBottlesDropdown(){
 
-var data=JSONtoARR(base.getData('BottleTypes')).sort(sortSTRINGLH('name'));
+var data=base.getData('BottleTypes').sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 }
 
@@ -196,7 +252,7 @@ function getFlavourDropdown(){
 
 var data=base.getData('Flavours');
 if (data) {
-        var result = JSONtoARR(data).sort(sortSTRINGLH('name'));
+        var result = data.sort(sortSTRINGLH('name'));
 
       
 return result;
@@ -216,7 +272,7 @@ function getRecipeDropdown(){
 
 var data=base.getData('Recipes');
   if (data) {
-    var result = JSONtoARR(data).sort(sortSTRINGLH('name'));
+    var result = data.sort(sortSTRINGLH('name'));
     var retArr = [];
     for (var i = 0; i < result.length; i++) {
       
