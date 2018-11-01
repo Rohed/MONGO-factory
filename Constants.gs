@@ -345,6 +345,7 @@ function getStatus(){
 }
 
 function setStatusinDB(attr){
+attr = 'On';
   Logger.log(attr);
   if(attr=='Off'){
     var data={

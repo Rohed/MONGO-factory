@@ -80,8 +80,8 @@ function STERILISEDATA(){
 //var sheets=['Orders','Mixing','MixingTeam','Production','Printing','Labelling','Packaging','Shipping','References'];
  var sheets=['References']
 
- var mainrun = true;
-  var onerun = false; 
+ var mainrun = false;
+  var onerun = true; 
  if(mainrun){
   for(var i=0;i<sheets.length;i++){
    
@@ -90,6 +90,10 @@ function STERILISEDATA(){
       var keys = Object.keys(data);
       var list=JSONtoARR(data);
       for(var j=0;j<list.length;j++){
+        if(keys[j]=='undefined'){
+          delete data[keys[j]];
+          continue;
+        }
       if(sheets[i]!='References'){
         if(!data[keys[j]].batch){
         delete data[keys[j]];
@@ -422,7 +426,7 @@ if(onerun){
   
     var sheets = [['Misc','Misc','FLAV','float'],['Flavours','Flavours','FLAV','float'],['Packages','Packages','PAC','int'],['Boxes','Boxes','BOX','int'],['Labels','Labels','LAB','int'],
     ['Colors','Color','COL','float'],['Premix','PremixesTypes','GBMIX','float'],['Unbranded','UnbrandedTypes','UB','int'],['Branded','BrandedTypes','BRA','int'],['Bottles','BottleTypes','BOT','int'],['Caps','Lids','CAP','int']];
-  
+  sheets = [['Packages','Packages','PAC','int']]
   //clear qty
   for(var s = 0; s < sheets.length; s++){
   
@@ -431,6 +435,10 @@ if(onerun){
     for(var i = 0; i < MiscList.length; i++){
       if(!Misc[MiscList[i]].sku){
         delete Misc[MiscList[i]]
+        continue;
+      }
+      if(MiscList[i]=='undefined'){
+       delete Misc[MiscList[i]]
         continue;
       }
       if(sheets[s][3]=='float'){
@@ -443,7 +451,12 @@ if(onerun){
         Misc[MiscList[i]].Completed =  parseInt(Misc[MiscList[i]].Completed,10);
       
       }
-      
+      if(sheets[s][1] == 'Packages'){
+       Misc[MiscList[i]].botperPack = isNaN(Misc[MiscList[i]].botperPack) ? Misc[MiscList[i]].botperPack: 1;
+       if(!Misc[MiscList[i]].botperPack ||  Misc[MiscList[i]].botperPack == 'undefined'){
+       Logger.log( Misc[MiscList[i]] +' '+MiscList[i]);
+       }
+      }
     }
     base.removeData(sheets[s][1])
     base.updateData(sheets[s][1],Misc);
@@ -555,6 +568,16 @@ id:'1'
 base.removeData("LogStatus");
 
 base.updateData('LogStatus',obj);
+
+var obj={
+status:"On",
+id:'1',
+nic:5,
+cbd:1
+};
+base.removeData("Roundups");
+
+base.updateData('Roundups',obj);
 }
 
 
