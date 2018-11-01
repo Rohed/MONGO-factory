@@ -43,21 +43,27 @@ function importBlankPCPC2(id) {
   var url=SERVER_URL+NODE_PATH+'/importblankpcpdpath';
   var response=UrlFetchApp.fetch(url, params).getContentText();
   Logger.log(response);
-  return [false,'importBlankPCPC2'];
+  return [false,'importBlankPCPC2',key];
   
 }
 
 function importBlankPCPC2Ping(id){
-
+//id = '10HWKXSHkzQkuXcyOp8YY6cddaVGdj71c-frRabL9Obw';
+ 
   Utilities.sleep(20000);
   try {
-    var status=base.getData('importBlankPCPD/status');
+    var statusRaw=base.getData('importBlankPCPD');
+    if(!statusRaw){
+          return [false,'importBlankPCPC2'];
+    }
+    var keys = Object.keys(statusRaw)
+    var status = statusRaw[keys[0]].status;
     if(!status){
       return [false,'importBlankPCPC2'];
     }
     
     var sheet = SpreadsheetApp.openById(id).getSheets()[0];
-    var key =base.getData('importBlankPCPD/key');
+    var key =[keys[0]]
     
     var params={
       method:"GET",
@@ -176,7 +182,13 @@ function updateGeneratedDataPing() {
   };
   
   try {
-    var status=base.getData('importBlankPCPD/status');
+    var statusRaw=base.getData('importBlankPCPD');
+    if(!statusRaw[0]){
+          return [false,'importBlankPCPC2'];
+    }
+    var status = statusRaw.status;
+    
+     
     if(!status){
       return [false,'updateGeneratedData'];
     }

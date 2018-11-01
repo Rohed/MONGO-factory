@@ -1,6 +1,6 @@
 var sheets=['MixingTeam','Production','Printing','Labelling','Packaging','Shipping'];
-var QTYSHEETS=['Misc','Packages','Flavours','Labels','Lids','Boxes'];
-
+var QTYSHEETS=['Misc','Packages','Flavours','Labels','Lids','Boxes','PremixesTypes','UnbrandedTypes','BrandedTypes'];
+ 
 var RESTORE_PASSWORD = "123";
 var PASSWORD='PASSWORD';
 var SLSHEETPASSWORD="SLSHEET";
@@ -109,10 +109,10 @@ function JSONtoARR(data) {
   
 }
 
-const ARRtoJSON = function(data, page) {
+function ARRtoJSON(data, page) {
   if (data) {
     var obj = {};
-
+ if (data.length > 0) {
     data.map(function(item) {
       if (item[IDENTIFIERS[page]]) {
         obj[item[IDENTIFIERS[page]]] = item;
@@ -120,6 +120,9 @@ const ARRtoJSON = function(data, page) {
     });
 
     return obj;
+    } else {
+      return {};
+    }
   } else {
     return {};
   }
@@ -201,7 +204,7 @@ return JSONtoARR(data).sort(sortSTRINGLH('name'));//.sort(superSort1('name'));
 
 function getCustomerDropdown(){
 
-var data=base.getData('Customers').sort(sortSTRINGLH('name'));
+var data=JSONtoARR(base.getData('Customers')).sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 
 
@@ -211,11 +214,10 @@ return data;//.sort(superSort1('name'));
 
 function getPackagingDropdown(){
 
-var data=base.getData('Packages');
+var data=JSONtoARR(base.getData('Packages'));
 
 
-return data.sort(sortSTRINGLH('name'));
-
+return data.filter(function(item){return item.name }).sort(sortSTRINGLH('name'));
 
 
 
@@ -224,25 +226,25 @@ return data.sort(sortSTRINGLH('name'));
 
 
 function getLidDropdown(){
-var data=base.getData('Lids').sort(sortSTRINGLH('name'));
+var data=JSONtoARR(base.getData('Lids')).sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 
 }
 
 
 function getLidDropdown2(){
-var data=base.getData('Lids').sort(sortSTRINGLH('name'));
+var data=JSONtoARR(base.getData('Lids')).sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 }
 function getBottlesDropdown2(){
 
-var data=base.getData('BottleTypes').sort(sortSTRINGLH('name'));
+var data=JSONtoARR(base.getData('BottleTypes')).sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 
 }
 function getBottlesDropdown(){
 
-var data=base.getData('BottleTypes').sort(sortSTRINGLH('name'));
+var data=JSONtoARR(base.getData('BottleTypes')).sort(sortSTRINGLH('name'));
 return data;//.sort(superSort1('name'));
 }
 
@@ -250,7 +252,7 @@ return data;//.sort(superSort1('name'));
 function getFlavourDropdown(){
 
 
-var data=base.getData('Flavours');
+var data=JSONtoARR(base.getData('Flavours'));
 if (data) {
         var result = data.sort(sortSTRINGLH('name'));
 
@@ -270,7 +272,7 @@ return result;
 function getRecipeDropdown(){
 
 
-var data=base.getData('Recipes');
+var data=JSONtoARR(base.getData('Recipes'));
   if (data) {
     var result = data.sort(sortSTRINGLH('name'));
     var retArr = [];
@@ -288,4 +290,74 @@ return retArr;
 
 
 
+}
+/*
+id: String,
+  action: String,
+  batch: String,
+  data: String,
+  msg: String,
+  page: String,
+  status: Boolean,
+  time: String,
+  type: String,
+  user: String
+*/
+function logItem(item){
+  
+  item.time=(new Date()).getTime();
+  if(item.data){
+    item.data=item.data.join(';');
+  }else{
+    item.data='';
+  }
+  item.batch=item.batch.toString();
+  item.key= item.time.toString();
+  base.setData('Log',item); 
+  //  }
+}
+
+
+function logUser(page,app){
+  var LOGDATA = {
+    status: true,
+    msg: '',
+    action: 'App Opened',
+    batch:app,
+    page: page,
+    user: Session.getActiveUser().getEmail(),
+    data: new Array()
+  };
+  logItem(LOGDATA)
+  
+} 
+
+
+function getStatus(){
+  var status=base.getData('LogStatus/1');
+  if(status.status == 'On'){
+    return true;
+  }else{
+    return false;
+  }
+  
+  
+}
+
+function setStatusinDB(attr){
+  Logger.log(attr);
+  if(attr=='Off'){
+    var data={
+      status:'On',
+    }
+    base.updateData('LogStatus/1',data);
+    return true;
+  }else{
+     var data={
+      status:'Off',
+    }
+     base.updateData('LogStatus/1',data);
+    return false;
+  }
+  
 }

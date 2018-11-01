@@ -25,7 +25,7 @@ function saveItemSL(obj, sheet) {
     if (obj.Completed == 'Completed') {
         obj.CompletionDate = new Date().getTime();
         obj.prodDate = new Date().getTime();
-        obj.movedtoNext = 1;
+        
         base.updateData(sheet + '/' + obj.batch, obj);
         LOGDATA.data.push(['Marked Completed:', obj.batch]);
         logItem(LOGDATA);
@@ -39,7 +39,7 @@ function saveItemSL(obj, sheet) {
         logItem(LOGDATA);
         obj.CompletionDate = new Date().getTime();
         obj.prodDate = new Date().getTime();
-        obj.movedtoNext = 1;
+        
         base.updateData(sheet + '/' + obj.batch, obj);
 
         var rez = MoveItem(obj.batch, sheet);
@@ -118,7 +118,7 @@ function runBusy(batch, page) {
         var order = base.getData('Orders/' + batch);
 
         var dat = {
-            movedtoNext: "Busy",
+            final_status: "Busy",
             starttime: (new Date()).getTime(),
         };
         base.updateData(page + '/' + batch, dat);
@@ -129,11 +129,11 @@ function runBusy(batch, page) {
             for (var i = 0; i < batches.length; i++) {
                 var dat1 = {
                     starttime: (new Date()).getTime(),
-                    movedtoNext: "Busy"
+                    final_status: "Busy"
 
                 };
                 var dat2 = {
-                    mixing_status: "Busy"
+                    final_status: "Busy"
                 };
                 base.updateData('Mixing/' + batches[i].batch, dat1);
                 base.updateData('Orders/' + batches[i].batch, dat2);
@@ -223,6 +223,10 @@ function overProd(batch, newBottles, sheet) {
             lidSKU: data.lidSKU,
             packaging: '',
             packagingType: {
+                sku: '',
+                name: '',
+            },
+            boxname: {
                 sku: '',
                 name: '',
             },

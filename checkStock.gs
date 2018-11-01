@@ -153,30 +153,30 @@ function checkStockValues(BATCHES) {
                   
                   
                   
-                   var colorCheck = base.getData('Colors/' + data.recipe.Color.sku);
+                   var colorCheck = base.getData('Colors/' + data.Color.sku);
                   if (!colorCheck) {
                     var colorCheck = {
                       Running: 0
                     };
                   }
-                  var exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                  var exists1 = OrigColorsArr.getIndex(data.Color.sku);
                   if (exists1 == -1) {
                     
-                    OrigColorsArr.push([data.recipe.Color.sku, colorCheck.Running]);
-                    exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                    OrigColorsArr.push([data.Color.sku, colorCheck.Running]);
+                    exists1 = OrigColorsArr.getIndex(data.Color.sku);
                   }
                   
-                  var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.recipe.Color.val * data.QTY *10);
+                  var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.Color.val * data.QTY *10);
                   OrigColorsArr[exists1][1] = ColorOBJ.running;
                   
-                  var exists2 = colorsArr.getIndex(data.recipe.Color.sku);
+                  var exists2 = colorsArr.getIndex(data.Color.sku);
                   if (exists2 == -1) {
                     
-                    colorsArr.push([data.recipe.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.recipe.Color.val * data.QTY*10])
+                    colorsArr.push([data.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.Color.val * data.QTY*10])
                   } else {
                     colorsArr[exists2][1] += ColorOBJ.used;
                     colorsArr[exists2][2] += ColorOBJ.left;
-                     colorsArr[exists2][3] += data.recipe.Color.val * data.QTY *10;
+                     colorsArr[exists2][3] += data.Color.val * data.QTY *10;
                   }
                   
                   
@@ -226,31 +226,31 @@ function checkStockValues(BATCHES) {
                       flavoursArr[exists2][3] += data.flavrecipe;
                 }
 
-                if(data.recipe.Color){
-                  var colorCheck = base.getData('Colors/' + data.recipe.Color.sku);
+                if(data.Color.sku){
+                  var colorCheck = base.getData('Colors/' + data.Color.sku);
                   if (!colorCheck) {
                     var colorCheck = {
                       Running: 0
                     };
                   }
-                  var exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                  var exists1 = OrigColorsArr.getIndex(data.Color.sku);
                   if (exists1 == -1) {
                     
-                    OrigColorsArr.push([data.recipe.Color.sku, colorCheck.Running]);
-                    exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                    OrigColorsArr.push([data.Color.sku, colorCheck.Running]);
+                    exists1 = OrigColorsArr.getIndex(data.Color.sku);
                   }
                   
-                  var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.recipe.Color.val * data.QTY *10);
+                  var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.Color.val * data.QTY *10);
                   OrigColorsArr[exists1][1] = ColorOBJ.running;
                   
-                  var exists2 = colorsArr.getIndex(data.recipe.Color.sku);
+                  var exists2 = colorsArr.getIndex(data.Color.sku);
                   if (exists2 == -1) {
                     
-                    colorsArr.push([data.recipe.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.recipe.Color.val * data.QTY*10])
+                    colorsArr.push([data.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.Color.val * data.QTY*10])
                   } else {
                     colorsArr[exists2][1] += ColorOBJ.used;
                     colorsArr[exists2][2] += ColorOBJ.left;
-                     colorsArr[exists2][3] += data.recipe.Color.val * data.QTY *10;
+                     colorsArr[exists2][3] += data.Color.val * data.QTY *10;
                   }
                   
                 
@@ -274,7 +274,7 @@ function checkStockValues(BATCHES) {
                 
         }
             } else if (suffix == 'U') {
-             if(data.recipe.Color){
+             if(data.Color.sku){
                       var premix = getPremixSKU(data,true);
                       
                       var premixCheck = base.getData("PremixesTypes/" + premix);
@@ -301,30 +301,30 @@ function checkStockValues(BATCHES) {
                         PremixArr[exists2][1] += pmixOBJ.used;
                       }
                      if (pmixOBJ.left <= 0) {continue;}else{
-                       var colorCheck = base.getData('Colors/' + data.recipe.Color.sku);
+                       var colorCheck = base.getData('Colors/' + data.Color.sku);
                        if (!colorCheck) {
                          var colorCheck = {
                            Running: 0
                          };
                        }
-                       var exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                       var exists1 = OrigColorsArr.getIndex(data.Color.sku);
                        if (exists1 == -1) {
                          
-                         OrigColorsArr.push([data.recipe.Color.sku, colorCheck.Running]);
-                         exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                         OrigColorsArr.push([data.Color.sku, colorCheck.Running]);
+                         exists1 = OrigColorsArr.getIndex(data.Color.sku);
                        }
                        
-                       var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.recipe.Color.val * data.QTY *10);
+                       var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.Color.val * data.QTY *10);
                        OrigColorsArr[exists1][1] = ColorOBJ.running;
                        
-                       var exists2 = colorsArr.getIndex(data.recipe.Color.sku);
+                       var exists2 = colorsArr.getIndex(data.Color.sku);
                        if (exists2 == -1) {
                          
-                         colorsArr.push([data.recipe.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.recipe.Color.val * data.QTY*10])
+                         colorsArr.push([data.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.Color.val * data.QTY*10])
                        } else {
                          colorsArr[exists2][1] += ColorOBJ.used;
                          colorsArr[exists2][2] += ColorOBJ.left;
-                         colorsArr[exists2][3] += data.recipe.Color.val * data.QTY *10;
+                         colorsArr[exists2][3] += data.Color.val * data.QTY *10;
                        }
                        
                        
@@ -606,7 +606,7 @@ function checkStockValues(BATCHES) {
                 if (UBOBJ.left > 0) {
                     data.QTY = (UBOBJ.left / 1000) * data.fill;
                     data.bottles = UBOBJ.left;
-                    if(data.recipe.Color){
+                    if(data.Color.sku){
                       var premix = getPremixSKU(data,true);
                       
                       var premixCheck = base.getData("PremixesTypes/" + premix);
@@ -633,30 +633,30 @@ function checkStockValues(BATCHES) {
                         PremixArr[exists2][1] += pmixOBJ.used;
                       }
                      if (pmixOBJ.left <= 0) {continue;}else{
-                       var colorCheck = base.getData('Colors/' + data.recipe.Color.sku);
+                       var colorCheck = base.getData('Colors/' + data.Color.sku);
                        if (!colorCheck) {
                          var colorCheck = {
                            Running: 0
                          };
                        }
-                       var exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                       var exists1 = OrigColorsArr.getIndex(data.Color.sku);
                        if (exists1 == -1) {
                          
-                         OrigColorsArr.push([data.recipe.Color.sku, colorCheck.Running]);
-                         exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                         OrigColorsArr.push([data.Color.sku, colorCheck.Running]);
+                         exists1 = OrigColorsArr.getIndex(data.Color.sku);
                        }
                        
-                       var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.recipe.Color.val * data.QTY *10);
+                       var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.Color.val * data.QTY *10);
                        OrigColorsArr[exists1][1] = ColorOBJ.running;
                        
-                       var exists2 = colorsArr.getIndex(data.recipe.Color.sku);
+                       var exists2 = colorsArr.getIndex(data.Color.sku);
                        if (exists2 == -1) {
                          
-                         colorsArr.push([data.recipe.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.recipe.Color.val * data.QTY*10])
+                         colorsArr.push([data.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.Color.val * data.QTY*10])
                        } else {
                          colorsArr[exists2][1] += ColorOBJ.used;
                          colorsArr[exists2][2] += ColorOBJ.left;
-                          colorsArr[exists2][3] += data.recipe.Color.val * data.QTY *10;
+                          colorsArr[exists2][3] += data.Color.val * data.QTY *10;
                        }
                        
                        
@@ -1033,7 +1033,7 @@ function checkStockValues(BATCHES) {
                             if (UBOBJ.left > 0) {
                                 data.QTY = (UBOBJ.left / 1000) * data.fill;
                                 data.bottles = UBOBJ.left;
-                              if(data.recipe.Color){
+                              if(data.Color.sku){
                                 var premix = getPremixSKU(data,true);
                                 
                                 var premixCheck = base.getData("PremixesTypes/" + premix);
@@ -1060,30 +1060,30 @@ function checkStockValues(BATCHES) {
                                   PremixArr[exists2][1] += pmixOBJ.used;
                                 }
                                 if (pmixOBJ.left <= 0) {continue;}else{
-                       var colorCheck = base.getData('Colors/' + data.recipe.Color.sku);
+                       var colorCheck = base.getData('Colors/' + data.Color.sku);
                        if (!colorCheck) {
                          var colorCheck = {
                            Running: 0
                          };
                        }
-                       var exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                       var exists1 = OrigColorsArr.getIndex(data.Color.sku);
                        if (exists1 == -1) {
                          
-                         OrigColorsArr.push([data.recipe.Color.sku, colorCheck.Running]);
-                         exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                         OrigColorsArr.push([data.Color.sku, colorCheck.Running]);
+                         exists1 = OrigColorsArr.getIndex(data.Color.sku);
                        }
                        
-                       var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.recipe.Color.val * data.QTY *10);
+                       var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.Color.val * data.QTY *10);
                        OrigColorsArr[exists1][1] = ColorOBJ.running;
                        
-                       var exists2 = colorsArr.getIndex(data.recipe.Color.sku);
+                       var exists2 = colorsArr.getIndex(data.Color.sku);
                        if (exists2 == -1) {
                          
-                         colorsArr.push([data.recipe.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.recipe.Color.val * data.QTY*10])
+                         colorsArr.push([data.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.Color.val * data.QTY*10])
                        } else {
                          colorsArr[exists2][1] +=ColorOBJ.used;
                          colorsArr[exists2][2] += ColorOBJ.left;
-                        colorsArr[exists2][3] += data.recipe.Color.val * data.QTY *10;
+                        colorsArr[exists2][3] += data.Color.val * data.QTY *10;
                        }
                        
                        
@@ -1276,7 +1276,7 @@ function checkStockValues(BATCHES) {
                             data.QTY = (UBOBJ.left / 1000) * data.fill;
                             data.bottles = UBOBJ.left;
                             
-                              if(data.recipe.Color){
+                              if(data.Color.sku){
                                 var premix = getPremixSKU(data,true);
                                 
                                 var premixCheck = base.getData("PremixesTypes/" + premix);
@@ -1303,30 +1303,30 @@ function checkStockValues(BATCHES) {
                                   PremixArr[exists2][1] += pmixOBJ.used;
                                 }
                                 if (pmixOBJ.left <= 0) {continue;}else{
-                       var colorCheck = base.getData('Colors/' + data.recipe.Color.sku);
+                       var colorCheck = base.getData('Colors/' + data.Color.sku);
                        if (!colorCheck) {
                          var colorCheck = {
                            Running: 0
                          };
                        }
-                       var exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                       var exists1 = OrigColorsArr.getIndex(data.Color.sku);
                        if (exists1 == -1) {
                          
-                         OrigColorsArr.push([data.recipe.Color.sku, colorCheck.Running]);
-                         exists1 = OrigColorsArr.getIndex(data.recipe.Color.sku);
+                         OrigColorsArr.push([data.Color.sku, colorCheck.Running]);
+                         exists1 = OrigColorsArr.getIndex(data.Color.sku);
                        }
                        
-                       var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.recipe.Color.val * data.QTY *10);
+                       var ColorOBJ = checkALL(OrigColorsArr[exists1][1],data.Color.val * data.QTY *10);
                        OrigColorsArr[exists1][1] = ColorOBJ.running;
                        
-                       var exists2 = colorsArr.getIndex(data.recipe.Color.sku);
+                       var exists2 = colorsArr.getIndex(data.Color.sku);
                        if (exists2 == -1) {
                          
-                         colorsArr.push([data.recipe.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.recipe.Color.val * data.QTY*10])
+                         colorsArr.push([data.Color.sku, ColorOBJ.used, ColorOBJ.left ,data.Color.val * data.QTY*10])
                        } else {
                          colorsArr[exists2][1] += ColorOBJ.used;
                          colorsArr[exists2][2] += ColorOBJ.left;
-                           colorsArr[exists2][3] += data.recipe.Color.val * data.QTY *10;
+                           colorsArr[exists2][3] += data.Color.val * data.QTY *10;
                        }
                        
                        
@@ -1608,7 +1608,7 @@ function checkStockValues(BATCHES) {
     logDATA.push(['Bottles', '', '', '', '']);
     for (var i = 0; i < BottlesArr.length; i++) {
         var running = base.getData('BottleTypes/' + BottlesArr[i][0] );
-        BottleMSG += running.name+' '+BottlesArr[i][0] + ":  -   Will Use: " + BottlesArr[i][1] + " - Available: " + running + ' -  Missing: ' + BottlesArr[i][2] + " - Required: " + BottlesArr[i][3] + '<br>';
+        BottleMSG += running.name+' '+BottlesArr[i][0] + ":  -   Will Use: " + BottlesArr[i][1] + " - Available: " + running.Running + ' -  Missing: ' + BottlesArr[i][2] + " - Required: " + BottlesArr[i][3] + '<br>';
         logDATA.push([running.name+' '+BottlesArr[i][0], BottlesArr[i][1], running.Running, BottlesArr[i][2], BottlesArr[i][3]]);
     }
     logDATA.push(['', '', '', '', '']);
@@ -1616,7 +1616,7 @@ function checkStockValues(BATCHES) {
     logDATA.push(['Lids', '', '', '', '']);
     for (var i = 0; i < LidsArr.length; i++) {
         var running = base.getData('Lids/' + LidsArr[i][0]);
-        LidMSG += running.name+' '+LidsArr[i][0] + ":  -   Will Use: " + LidsArr[i][1] + " - Available: " + running + ' -  Missing: ' + LidsArr[i][2] + " - Required: " + LidsArr[i][3] + '<br>';
+        LidMSG += running.name+' '+LidsArr[i][0] + ":  -   Will Use: " + LidsArr[i][1] + " - Available: " + running.Running + ' -  Missing: ' + LidsArr[i][2] + " - Required: " + LidsArr[i][3] + '<br>';
         logDATA.push([running.name+' '+LidsArr[i][0], LidsArr[i][1], running.Running, LidsArr[i][2], LidsArr[i][3]]);
     }
     logDATA.push(['', '', '', '', '']);
@@ -1653,14 +1653,14 @@ function checkStockValues(BATCHES) {
     logDATA.push(['Pack Types', '', '', '', '']);
     for (var i = 0; i < TubesArr.length; i++) {
         var running = base.getData('Packages/' + TubesArr[i][0] );
-        tubeMSG += running.name+' '+TubesArr[i][0] + ":  -   Will Use: " + TubesArr[i][1] + " - Available: " + running + ' -  Missing: ' + TubesArr[i][2] + " - Required: " + TubesArr[i][3] + '<br>';
+        tubeMSG += running.name+' '+TubesArr[i][0] + ":  -   Will Use: " + TubesArr[i][1] + " - Available: " + running.Running+ ' -  Missing: ' + TubesArr[i][2] + " - Required: " + TubesArr[i][3] + '<br>';
         logDATA.push([running.name+' '+TubesArr[i][0], TubesArr[i][1], running.Running, TubesArr[i][2], TubesArr[i][3]]);
     }
     logDATA.push(['', '', '', '', '']);
     logDATA.push(['Boxes', '', '', '', '']);
     for (var i = 0; i < BoxArr.length; i++) {
         var running = base.getData('Boxes/' + BoxArr[i][0] );
-        BoxMSG += BoxArr[i][0] + ":  -   Will Use: " + BoxArr[i][1] + " - Available: " + running + ' -  Missing: ' + BoxArr[i][2] + " - Required: " + BoxArr[i][3] + '<br>';
+        BoxMSG += BoxArr[i][0] + ":  -   Will Use: " + BoxArr[i][1] + " - Available: " + running.Running + ' -  Missing: ' + BoxArr[i][2] + " - Required: " + BoxArr[i][3] + '<br>';
         logDATA.push([running.name+' '+BoxArr[i][0], BoxArr[i][1], running.Running, BoxArr[i][2], BoxArr[i][3]]);
     }
     logDATA.push(['', '', '', '', '']);
@@ -1668,7 +1668,7 @@ function checkStockValues(BATCHES) {
     logDATA.push(['Labels', '', '', '', '']);
     for (var i = 0; i < LabelsArr.length; i++) {
         var running = base.getData('Labels/' + LabelsArr[i][0]);
-        LabelMSG += running.name+' '+LabelsArr[i][0] + ":  -   Will Use: " + LabelsArr[i][1] + " - Available: " + running + ' -  Missing: ' + LabelsArr[i][2] + " - Required: " + LabelsArr[i][3] + '<br>';
+        LabelMSG += running.name+' '+LabelsArr[i][0] + ":  -   Will Use: " + LabelsArr[i][1] + " - Available: " + running.Running + ' -  Missing: ' + LabelsArr[i][2] + " - Required: " + LabelsArr[i][3] + '<br>';
         logDATA.push([running.name+' '+LabelsArr[i][0], LabelsArr[i][1], running.Running, LabelsArr[i][2], LabelsArr[i][3]]);
     }
     logDATA.push(['', '', '', '', '']);

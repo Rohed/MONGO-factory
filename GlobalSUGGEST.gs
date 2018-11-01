@@ -58,10 +58,10 @@ return [base.getData(page+'/'+id),page];
 
 function get_labels_helper_dropdown(){
 
- return JSONtoARR(base.getData('Labels'));
+ return Jbase.getData('Labels');
 }
 
 function get_colors_helper_dropdown(){
 
- return JSONtoARR(base.getData('Color'));
+ return base.getData('Color');
 }

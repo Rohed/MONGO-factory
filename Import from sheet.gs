@@ -1,84 +1,4 @@
-function myFunction() {
-    var data = getQTY('UnbrandedTypes');
-    var pages = [];
-    var i, j, temparray, chunk = 500;
-    for (i = 0, j = data[0].length; i < j; i += chunk) {
-        temparray = data[0].slice(i, i + chunk);
-        // do whatever
-        pages.push(temparray);
-    }
-    return pages;
-}
 
-function deleteSheet() {
-    base.removeData('Orders');
-}
-
-function importBottles() {
-    var id = '1-WoYSiAUpnEJipjDktr2JyoydsjOZqSkN3TT-YWfD1M';
-    var data = SpreadsheetApp.openById(id).getSheetByName('Sheet1').getDataRange().getValues();
-    for (var i = 1; i < data.length; i++) {
-
-
-
-    }
-
-
-}
-
-function getFromSheetRecipes() {
-    var id = '1WBYmW-OrQj5G9LTj2J9VINUM-T_6gx0QzqPbolXJ7p4';
-    var data = SpreadsheetApp.openById(id).getSheetByName('Sheet1').getDataRange().getValues();
-    for (var i = 13; i < data.length; i++) {
-        var disp = data[i][0].split(' ');
-        var name = {
-            vgint: parseInt(disp[2], 10),
-            pgint: parseInt(disp[4], 10),
-            nicint: parseInt(disp[7].replace('MG', '').replace(':', ''), 10),
-            nicorec: parseInt(data[i][3], 10),
-            Flavrec: parseInt(data[i][4], 10),
-            vgrec: parseInt(data[i][1], 10),
-            pgrec: parseInt(data[i][2], 10),
-            type: 'nic'
-        };
-        // generateForSingleRecipe(name);
-    }
-}
-
-function Import_new_FBC() {
-    base.removeData('Brands');
-    var id = '1SN1WWN9Xc8-sLIGUErzGk2Bu3FHKc3qmL67HLOLqsiM';
-    var ss = SpreadsheetApp.openById(id);
-    var data = ss.getSheetByName('Sheet1').getDataRange().getDisplayValues();
-    var options1 = '{';
-    for (var i = 1; i < data.length; i++) {
-        //Get Flavour
-        // var flavourandrecipe=data[i][0];
-        //  flavourandrecipe=flavourandrecipe.split(' - ');
-        var flavour = data[i][1].replace(/&/g, '').replace('&', '').replace('/', '').replace('(', '').replace(')', '').replace(/\./g, '');
-        /*
-           var brand = data[i][2];
-                var t2 = brand.split(' - ');
-                   if (t2.length > 1) {
-                       brand = t2[0];
-                   }*/
-        var sku = 'BRA' + getRandom() + flavour.substr(0, 1);
-        var dat1 = {
-            sku: sku,
-            name: flavour,
-            /*   Running:0,
-                Reserved:0,
-                Completed:0,
-                Stock:0*/
-
-
-        };
-        options1 += '"' + flavour + '":' + JSON.stringify(dat1) + ',';
-    }
-    options1 += '}';
-    var upload = JSON.parse(options1);
-    base.updateData('Brands', upload)
-}
 function TESTQTY(){
 var id = '11fCoEZYTvbEDiSjxlhn4yxswRme2PyFGCbYKrSe5mX0';
 QTYInport(id)
@@ -265,73 +185,7 @@ function createRefferenceDB(id) {
     return response;
 }
 
-function updatebotlid() {
-    var bottles = JSONtoARR(base.getData('BottleTypes'));
-    var Caps = JSONtoARR(base.getData('Lids'));
-    var pc = JSONtoARR(base.getData('References/ProductCodes'));
-    var pd = JSONtoARR(base.getData('References/Descriptions'));
-    for (var j = 0; j < pc.length; j++) {
-        for (var i = 0; i < Caps.length; i++) {
 
-            if (Caps[i].name == pc[j].lid) {
-                pc[j].lidSKU = Caps[i].sku;
-                break;
-            }
-        }
-    }
-    for (var j = 0; j < pc.length; j++) {
-        for (var i = 0; i < bottles.length; i++) {
-
-            if (bottles[i].name == pc[j].btype) {
-                pc[j].botSKU = bottles[i].sku;
-                break;
-            }
-        }
-    }
-    for (var j = 0; j < pd.length; j++) {
-        for (var i = 0; i < bottles.length; i++) {
-
-            if (bottles[i].name == pd[j].btype) {
-                pd[j].botSKU = bottles[i].sku;
-                break;
-            }
-        }
-    }
-
-    for (var j = 0; j < pd.length; j++) {
-        for (var i = 0; i < Caps.length; i++) {
-
-            if (Caps[i].name == pd[j].lid) {
-                pd[j].lidSKU = Caps[i].sku;
-                break;
-            }
-        }
-    }
-
-    var options1 = '{';
-    var options2 = '{';
-    for (var i = 0; i < pc.length; i++) {
-        options1 += '"' + pc[i].prod + '":' + JSON.stringify(pc[i]) + ',';
-
-    }
-    for (var i = 0; i < pd.length; i++) {
-        options1 += '"' + pc[i].descr + '":' + JSON.stringify(pd[i]) + ',';
-
-    }
-
-
-    options1 += '}';
-    options2 += '}';
-    var ob1 = JSON.parse(options1);
-    var ob2 = JSON.parse(options2);
-
-    // base.removeData('References');
-
-    base.updateData('References/ProductCodes', ob1);
-
-    base.updateData('References/Descriptions', ob2);
-
-}
 
 function importRecipesFromSheet(id) {
 
@@ -361,7 +215,7 @@ function importRecipesFromSheet(id) {
             continue;
         }
         if (data[i][16] == 'Y') {
-            base.removeData('Recipes/' + id);
+           
 
             base.removeData('Recipes/' + id);
             LOGDATA.data.push(['Removed:', id]);
@@ -427,10 +281,8 @@ function importRecipesFromSheet(id) {
         if (ColorName && ColorName && ColorName) {
             recipe.Color.name = ColorName;
             recipe.Color.sku = ColorSKU;
-            recipe.Color.val = ColorVal;
-        } else {
-            delete recipe.Color;
-        }
+            recipe.Color.val = ColorVal ? ColorVal : 0;
+        } 
         options += '"' + recipe.id + '":' + JSON.stringify(recipe) + ',';
 
 
@@ -1187,8 +1039,7 @@ function importFlavourMixFromSheet(id) {
             continue;
         }
         if (data[i][5] == 'Y') {
-            base.removeData('FlavourMixes/' + name);
-
+         
             base.removeData('FlavourMixes/' + name);
             LOGDATA.data.push(['Removed:', sku]);
             continue;
@@ -1314,7 +1165,7 @@ function importInventoryData(id){
             eta: data[i][5],
             quantity: data[i][6],
             note: data[i][7],
-           
+           key:'undefined'
             
         };
         for(var p=0;p<pages.length;p++){
@@ -1336,7 +1187,7 @@ function importInventoryData(id){
         break;
         }
         }
-    LOGDATA.msg+=saveItem2(obj)+'\n';
+    LOGDATA.msg+=saveItem(obj)+'\n';
     }
      logItem(LOGDATA);
     return LOGDATA.msg;
@@ -1387,70 +1238,3 @@ function intersect(a, b) {
 }
 
 
- function updatebotlid(){
-   var bottles=JSONtoARR(base.getData('BottleTypes'));
-   var Caps=JSONtoARR(base.getData('Lids'));
-   var pc=JSONtoARR(base.getData('References/ProductCodes'));
-   var pd=JSONtoARR(base.getData('References/Descriptions'));
-     for(var j=0;j<pc.length;j++){   
-   for(var i=0;i<Caps.length;i++){
-
-       if(Caps[i].name==pc[j].lid){
-         pc[j].lidSKU=Caps[i].sku;
-         break;
-       }
-     }
-   }
-     for(var j=0;j<pc.length;j++){ 
-    for(var i=0;i<bottles.length;i++){
-
-       if(bottles[i].name==pc[j].btype){
-         pc[j].botSKU=bottles[i].sku;
-          break;
-       }
-     }
-   }
-  for(var j=0;j<pd.length;j++){ 
-  for(var i=0;i<bottles.length;i++){
-
-     if(bottles[i].name==pd[j].btype){
-     pd[j].botSKU=bottles[i].sku;
-      break;
-     }
-   }
- }
- 
-  for(var j=0;j<pd.length;j++){ 
-  for(var i=0;i<Caps.length;i++){
-
-     if(Caps[i].name==pd[j].lid){
-     pd[j].lidSKU=Caps[i].sku;
-      break;
-     }
-   }
- }
- 
-   var options1='{'; 
-   var options2='{'; 
-   for(var i=0;i<pc.length;i++){
-     options1 += '"' + pc[i].prod + '":' + JSON.stringify(pc[i]) + ',';
-     
-   }
-   for(var i=0;i<pd.length;i++){
-     options1 += '"' + pc[i].descr + '":' + JSON.stringify(pd[i]) + ',';
-     
-   }
-   
-   
-   options1 += '}';
-   options2 += '}';
-   var ob1 = JSON.parse(options1);
-   var ob2 = JSON.parse(options2);
-   
-// base.removeData('References');
- 
-   base.updateData('References/ProductCodes', ob1);
-   
-   base.updateData('References/Descriptions', ob2);
-   
- }

@@ -320,7 +320,7 @@ for(var j=0;j<tabs.length;j++){
       
        var values=[];
        for(var i=0;i<data.length;i++){
-       values.push([data[i].sku,data[i].desc,data[i].orderdate,data[i].delivdate,data[i].paiddate,data[i].eta,data[i].quantity,data[i].note]);
+       values.push([data[i].sku,data[i].desc,formatDateDisplay(data[i].orderdate),formatDateDisplay(data[i].delivdate),formatDateDisplay(data[i].paiddate),data[i].eta,data[i].quantity,data[i].note]);
        }
       values.unshift(headerRow);
       var sheet=file.insertSheet('Inventory');
@@ -349,7 +349,7 @@ for(var j=0;j<tabs.length;j++){
       sheet.getRange(1, 1, values.length, values[0].length).setValues(values);
   
      }else if(tabs[j]== 'PC/PD'){   
-     var baseData=base.getData('References/ProductCodes');
+     var baseData=base.getData('References');
      var keys=Object.keys(baseData);
             var data=JSONtoARR(baseData);
 

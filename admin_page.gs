@@ -94,7 +94,7 @@ function getFormData2(page) {
 }
 
 function getProductCodes() {
-    var data = base.getData('References/ProductCodes');
+    var data = base.getData('References');
     if (data) {
           return JSONtoARR(data).sort(sortFunction);
     } else {
@@ -103,7 +103,7 @@ function getProductCodes() {
 }
 
 function getProductDescriptions() {
-    var data = base.getData('References/Descriptions');
+    var data = base.getData('References');
     if (data) {
     
         return JSONtoARR(data).sort(sortFunction);
@@ -121,290 +121,15 @@ function getOrdersData() {
 
 function getInventoryDescription() {
     var retArr = [];
-
-
-
-    var misc = base.getData('Misc');
-
-    var marr = [];
-    if (misc) {
-        var result = Object.keys(misc).map(function(key) {
-            return [Number(key), misc[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            marr.push(result[i][1]);
-
-        }
-
+  var obj = {orderBy:'name'};
+  for(var i = 0 ; i < QTYSHEETS.length;i++){
+ 
+  var dataList = JSONtoARR(base.getData(QTYSHEETS[i],obj));
+    for(var j = 0 ; j< dataList.length; j++){
+      dataList[j].page = QTYSHEETS[i]
     }
-    for (var i = 0; i < marr.length; i++) {
-        if (marr[i].name == 'VG') {
-            retArr.push(marr[i])
-        }
-
-    }
-      for (var i = 0; i < marr.length; i++) {
-        if (marr[i].name == 'AG') {
-            retArr.push(marr[i])
-        }
-
-    }
-    for (var i = 0; i < marr.length; i++) {
-        if (marr[i].name == 'PG') {
-            retArr.push(marr[i])
-        }
-
-    }
-    for (var i = 0; i < marr.length; i++) {
-        if (marr[i].name == 'Nicotine') {
-            retArr.push(marr[i])
-        }
-
-    }
-     for (var i = 0; i < marr.length; i++) {
-        if (marr[i].name == 'Nicotine Salts') {
-            retArr.push(marr[i])
-        }
-
-    }
-    for (var i = 0; i < marr.length; i++) {
-        if (marr[i].name == 'CBD') {
-            retArr.push(marr[i])
-        }
-
-    }
-     for (var i = 0; i < marr.length; i++) {
-        if (marr[i].name == 'MCT') {
-            retArr.push(marr[i])
-        }
-
-    }
-    for (var i = 0; i < marr.length; i++) {
-        if (marr[i].name != 'VG' && marr[i].name != 'PG'&& marr[i].name != 'Nicotine Salts' && marr[i].name != 'Nicotine' && marr[i].name != 'CBD' && marr[i].name != 'MCT' && marr[i].name != 'AG') {
-            retArr.push(marr[i])
-        }
-
-    }
-
-
-
-    var n = retArr.length;
-    for (var i = 0; i < n; i++) {
-        retArr[i].page = 'Misc';
-    }
-    
-    var labels = base.getData('Labels');
-
-
-
-    if (labels) {
-        var result = Object.keys(labels).map(function(key) {
-            return [Number(key), labels[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            retArr.push(result[i][1]);
-
-        }
-
-    }
-
-
-
-    var l = retArr.length;
-    for (var i = n; i < l; i++) {
-        retArr[i].page = 'Labels';
-    }
-
-
-    
-    var boxes = base.getData('Boxes');
-
-
-
-    if (boxes) {
-        var result = Object.keys(boxes).map(function(key) {
-            return [Number(key), boxes[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            retArr.push(result[i][1]);
-
-        }
-
-    }
-
-
-
-    var n = retArr.length;
-    for (var i = l; i < n; i++) {
-        retArr[i].page = 'Boxes';
-    }
-
-
-
-    var packages = base.getData('Packages');
-
-
-
-    if (packages) {
-        var result = Object.keys(packages).map(function(key) {
-            return [Number(key), packages[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            retArr.push(result[i][1]);
-
-        }
-
-    }
-
-
-
-    var l = retArr.length;
-    for (var i = n; i < l; i++) {
-        retArr[i].page = 'Packages';
-    }
-
-
-
-
-    var flavours = base.getData('Flavours');
-
-
-
-    if (flavours) {
-        var result = Object.keys(flavours).map(function(key) {
-            return [Number(key), flavours[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            retArr.push(result[i][1]);
-
-        }
-    }
-
-
-    var n = retArr.length;
-    for (var i = l; i < n; i++) {
-        retArr[i].page = 'Flavours';
-    }
-
-
-
-
-    var bottletypes = base.getData('BottleTypes');
-
-    if (bottletypes) {
-        var result = Object.keys(bottletypes).map(function(key) {
-            return [Number(key), bottletypes[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            retArr.push(result[i][1]);
-
-        }
-
-    }
-
-
-    var l = retArr.length;
-    for (var i = n; i < l; i++) {
-        retArr[i].page = 'BottleTypes';
-    }
-
-
-    var lids = base.getData('Lids');
-    if (lids) {
-        var result = Object.keys(lids).map(function(key) {
-            return [Number(key), lids[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            retArr.push(result[i][1]);
-
-        }
-    }
-
-
-    var n = retArr.length;
-    for (var i = l; i < n; i++) {
-        retArr[i].page = 'Lids';
-    }
-
-
-
-
-    var premixes = base.getData('PremixesTypes');
-
-    if (premixes) {
-        var result = Object.keys(premixes).map(function(key) {
-            return [Number(key), premixes[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            retArr.push(result[i][1]);
-
-        }
-    }
-
-
-    var l = retArr.length;
-    for (var i = n; i < l; i++) {
-        retArr[i].page = 'PremixesTypes';
-    }
-
-
-    var unbranded = (base.getData('UnbrandedTypes'));
-
-    if (unbranded) {
-        var result = Object.keys(unbranded).map(function(key) {
-            return [Number(key), unbranded[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            retArr.push(result[i][1]);
-
-        }
-    }
-
-
-    var n = retArr.length;
-    for (var i = l; i < n; i++) {
-        retArr[i].page = 'UnbrandedTypes';
-    }
-
-
-    var branded = (base.getData('BrandedTypes'));
-
-    if (branded) {
-        var result = Object.keys(branded).map(function(key) {
-            return [Number(key), branded[key]];
-        });
-
-
-        for (var i = 0; i < result.length; i++) {
-            retArr.push(result[i][1]);
-
-        }
-    }
-
-
-    var l = retArr.length;
-    for (var i = n; i < l; i++) {
-        retArr[i].page = 'BrandedTypes';
-    }
-
+  retArr = retArr.concat(dataList);
+  }
     return retArr;
 
 }
@@ -585,7 +310,7 @@ function getSheetData(sheet) {
               if (sheet == 'MixingTeam') {
                 data = sortByLowest(data);
             } else {
-                data=data.sort(sortNUMHL('priority'));
+                data=data.sort(sortPrioritySpecialLH);
             }
            
             return data;
@@ -607,7 +332,7 @@ function delete_PCD(pc,pd){
     user:Session.getActiveUser().getEmail(),
     data:new Array()
   };
-  base.removeData('References/ProductCodes/'+pc);
+  base.removeData('References/'+pc);
   
   base.removeData('References/Descriptions/'+pd);
   LOGDATA.data.push(['Removed:',pc]);
@@ -726,7 +451,10 @@ logItem(LOGDATA);
 }
 
 
+function testGETSINGLEQTY(){
+getSingleQTYData('VG', 'Misc')
 
+}
 function getSingleQTYData(id, page) {
     var data = base.getData(page + '/' + id);
 
@@ -818,7 +546,7 @@ function getLocations() {
         for (var i = 0; i < result.length; i++) {
             LabellingArr.push(result[i][1]);
         }
-        LabellingArr.sort(sortarr);
+        LabellingArr.sort(sortNUMHL('orderdate'));
 
         for (var i = 0; i < LabellingArr.length; i++) {
             if (LabellingArr[i].Location) {
@@ -835,7 +563,7 @@ function getLocations() {
         for (var i = 0; i < result.length; i++) {
             PrintingArr.push(result[i][1]);
         }
-        PrintingArr.sort(sortarr);
+        PrintingArr.sort(sortNUMHL('orderdate'));
 
         for (var i = 0; i < PrintingArr.length; i++) {
             if (PrintingArr[i].Location) {
@@ -921,14 +649,9 @@ var forord=false;
             }
             return [page, arr];
         } else if(params.orderBy == 'priority'){
-          var data = JSONtoARR(base.getData(page));
-          var arr = [];
-          for (var i = 0; i < data.length; i++) {
-            if (data[i].priority==params.equalTo) {
-              arr.push(data[i]);
-            }
-          }
-          return [page, arr];
+          var data = JSONtoARR(base.getData(page,params));
+         
+          return [page, data];
           
           
         
@@ -987,10 +710,10 @@ function TESTSEARCHFOR() {
 
     var params = {
         orderBy: 'final_status',
-        equalTo: "Completed",
+        equalTo: "Not Run",
 
     }
-    searcharr.push(['MixingTeam', params]);
+    searcharr.push(['Orders', params]);
 
    var data=searchFor(searcharr);
     Logger.log(data);
@@ -1014,7 +737,7 @@ function searchFor(searchARR) {
         }
     }
    if(rett[0]!='FlavourMixOrders'||rett[0]!='FlavourMixMixingTeam'){
-   rett[1]=rett[1].sort(sortNUMLH('priority'))
+   rett[1]=rett[1].sort(sortPrioritySpecialLH)
    }
     return rett;
 }
@@ -1218,7 +941,7 @@ function save_PCD(obj, old, editold) {
   };
     if (editold) {
         //base.removeData('References/Descriptions/'+old.descr);
-        //base.removeData('References/ProductCodes/'+old.prod);
+        //base.removeData('References/'+old.prod);
         var descr = obj.productdescription;
         var prod = obj.productcode;
         descr = descr.replace(/&/g, '').replace('&', '').replace('/', '').replace('(', '').replace(')', '').replace('.', '');
@@ -1226,7 +949,7 @@ function save_PCD(obj, old, editold) {
         obj.prod = prod;
         obj.descr = descr;
         base.updateData('References/Descriptions/' + descr, obj);
-        base.updateData('References/ProductCodes/' + prod, obj);
+        base.updateData('References/' + prod, obj);
         var descr2 = descr.split(': ');
         var name2 = descr2[1].replace('3 x 10ml', '10ml').replace('4 x 10ml', '10ml').replace(/\./g, "");
         generateForSingleUnbrand2(obj.unbrandSKU, name2);
@@ -1249,7 +972,7 @@ LOGDATA.action='Edit';
         obj.prod = prod;
         obj.descr = descr;
         base.updateData('References/Descriptions/' + descr, obj);
-        base.updateData('References/ProductCodes/' + prod, obj);
+        base.updateData('References/' + prod, obj);
         generateForSingleBrand3(prod, descr);
         var descr2 = descr.split(': ');
         var name2 = descr2[1].replace('3 x 10ml', '10ml').replace('4 x 10ml', '10ml').replace(/\./g, "");
@@ -1276,7 +999,7 @@ Logger.log('PC  '+PC);
     try {
         var formdata = getFormData();
 
-        var EPC = base.getData('References/ProductCodes/' + PC);
+        var EPC = base.getData('References/' + PC);
         var EPD = EPC.descr;
         var arr = [formdata, EPC, EPD, 'EPC']
         return arr;
@@ -1301,7 +1024,7 @@ Logger.log('PD  '+PD);
 
 
 function getPCSelect(PC) {
-    var ret = base.getData('References/ProductCodes/' + PC);
+    var ret = base.getData('References/' + PC);
     return ret;
 }
 
@@ -1420,7 +1143,7 @@ return JSONtoARR(base.getData('FlavourMixes'));
 
 function getFormDataSingle(item, type, num) {
     if (type == 'PC') {
-        var data = base.getData('References/ProductCodes/' + item);
+        var data = base.getData('References/' + item);
     } else {
         var data = base.getData('References/Descriptions/' + item);
     }
@@ -1489,10 +1212,7 @@ return 'Success';
 }
 
 function setPriority(priority,oldpriority,increase,orderID){
-if(priority){
-priority=priority.toString();
-} 
-oldpriority=oldpriority.toString();
+ 
 orderID=orderID.toString();
  
   var params2={
@@ -1536,12 +1256,12 @@ orderID=orderID.toString();
       }
       
       if(increase){
-         if(alllist[i].priority>=parseInt(priority,10)||alllist[i].priority==''){
+         if(alllist[i].priority>=parseInt(priority,10)||alllist[i].priority==0){
           list.push(alllist[i]);
           options2 += '"' + alllist[i].batch + '":' + JSON.stringify(alllist[i]) + ',';
         }
         }else{
-          if(alllist[i].priority>=parseInt(oldpriority,10)||alllist[i].priority==''){
+          if(alllist[i].priority>=parseInt(oldpriority,10)||alllist[i].priority==0){
           list.push(alllist[i]);
           options2 += '"' + alllist[i].batch + '":' + JSON.stringify(alllist[i]) + ',';
         }
@@ -1582,7 +1302,7 @@ orderID=orderID.toString();
               rawData[list[i].batch].priority=pom-1;
             }
           }else{
-            rawData[list[i].batch].priority='';
+            rawData[list[i].batch].priority=0;
           }
         }
       }
@@ -1617,7 +1337,7 @@ function changePriority(sheet,batch){
   var startchange=true;  
   for(var i=0;i<list.length;i++){
     if(list[i].orderID==itemOrderID){
-      if(list[i].movedtoNext!=1){
+      if(list[i].final_status!="Completed"){
         startchange=false;
         break;
       }
@@ -1629,22 +1349,29 @@ function changePriority(sheet,batch){
   }
 }
 
+function testCHECKSTATUS(){
+var selected = ["INV-00011059", "INV-00011048"];
+var data = checkStatus(selected);
 
+Logger.log(data);
+}
 function checkStatus(SELECTED){
 
   var batches=[];
-  var data=JSONtoARR(base.getData('Orders'));
-  for(var i=0;i<data.length;i++){
-    
-    if(!data[i].recipe){continue;}
-    if(SELECTED.indexOf(data[i].orderID)>=0){
-      batches.push(data[i].batch);
-      
+  for(var i = 0 ; i < SELECTED.length; i++){
+    var param = {
+      equalTo:SELECTED[i],
+      orderBy:'orderID'
     }
+    var data=JSONtoARR(base.getData('Orders',param));
+    data.map(function(item){
+      batches.push(item.batch);
+    });
   }
   
-    return getBatchInfo(batches,'statuscheck')
- 
+  
+  return getBatchInfo(batches,'statuscheck')
+  
 }
 
 
@@ -1656,7 +1383,7 @@ var list=JSONtoARR(base.getData('Orders')).filter(function(item){
 
   for(var i=0;i<list.length;i++){
     if(list[i].final_status==0){
-      var dataPC = base.getData("References/ProductCodes/"+list[i].productcode)
+      var dataPC = base.getData("References/"+list[i].productcode)
 
           list[i].boxname=dataPC.boxname;
           list[i].fill=dataPC.fill;
@@ -1693,4 +1420,44 @@ var list=JSONtoARR(base.getData('Orders')).filter(function(item){
     
   }
 return "Completed";
+}
+
+function getRoundups(){
+var RU = base.getData('Roundups/1');
+if(RU){
+return [RU,'Roundups'];
+
+}else{
+ return  [{nic:5,cbd:1},'Roundups'];
+}
+ 
+}
+
+function updateRoundups(obj){
+if(!obj.nic){
+obj.nic = 1;
+}
+if(!obj.cbd){
+obj.cbd = 1;
+}
+obj.id='1';
+base.updateData('Roundups/1',obj);
+return 'Saved';
+}
+
+function getglobalFilter(){
+var GF = base.getData('globalFilter/1');
+if(GF){
+return [GF,'globalFilter'];
+
+}else{
+ return  [{months:0},'globalFilter'];
+}
+ 
+}
+
+function updateglobalFilter(obj){
+obj.id= '1';
+base.updateData('globalFilter/1',obj);
+return 'Saved';
 }

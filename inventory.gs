@@ -1,3 +1,18 @@
+function Testsaveitem(){
+var data = {
+delivdate: "2018-10-19",
+desc: "Chocolate Ice Cream",
+eta: "9",
+key: "undefined",
+note: "somenote",
+orderdate: "2018-10-19",
+page: "Flavours",
+paiddate: "2018-10-19",
+quantity: 12,
+sku: "FLAV2203C",
+}
+saveItem(data)
+}
 function saveItem(data) {
 
 
@@ -89,9 +104,13 @@ function saveItem(data) {
                 for (var i = 0; i < result.length; i++) {
                     Rows.push(result[i][1].row);
                 }
+              if(Rows.length>0){
                 var max = Rows.reduce(function(a, b) {
-                    return Math.max(a, b);
+                  return Math.max(a, b);
                 });
+              }else{
+               var max = 0;
+              }
             } else {
                 var max = 0;
             }

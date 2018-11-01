@@ -255,55 +255,44 @@ google.script.run.withSuccessHandler(logSuccess).logUser(selPage, app);
 filterpage('xx', true);
 
 $('.tabs .tab-links a').on('click', function(e) {
-     $("#subTabFlavourMixOrders").removeClass('active');
-     $('.content').html('');
-     $('.modal-body').html('');
-     var subtab=$(this).attr('sub');
-     pagesSplit=false;
-     $("#scheduleOptions").hide();
-     if(subtab=='sub'){
-        
-     
-     $(this).parent('li').addClass('active').siblings().removeClass('active');
-     
-     if($(this).attr('id')=='scheduled'){
-     $("#scheduleOptions").show();
-     
-     google.script.run.withSuccessHandler(setScheduleDropdown).getScheduleDropdown();   
-     
-     
-     }else{
-     
-     var param=$(this).attr('param');
-     BASEPARAM.equalTo=param;
-     filterpage('xx',true);
-     
-     
-     }
-     }else if(subtab=='subOrder'){
-    
-     var page=$(this).attr('page');
-     thisPage=page;
-     selPage=page;
-     filterpage('xx',true);
-     $("#subTabFlavourMixOrders").addClass('active');
-     }else{
-     
-     var currentAttrValue = $(this).attr('href');
-     
-     // Show/Hide Tabs
-     $('.tabs ' + currentAttrValue).show().siblings().hide();
-     $(this).parent('li').addClass('active').siblings().removeClass('active');
-     
-     populateSheet(currentAttrValue);
-     // Change/remove current tab to active
-     
-     }
-     hideDiv();
-     e.preventDefault();
-     e.stopPropagation();
-     
-     });
+    $("#subTabFlavourMixOrders").removeClass('active');
+    $('.content').html('');
+    $('.modal-body').html('');
+    var subtab = $(this).attr('sub');
+    pagesSplit = false;
+    $("#scheduleOptions").hide();
+    console.log('h1');
+    if (subtab == 'sub') {
+        console.log('h2');
+        $(this).parent('li').addClass('active').siblings().removeClass('active');
+        if ($(this).attr('id') == 'scheduled') {
+            console.log('h3');
+            $("#scheduleOptions").show();
+            google.script.run.withSuccessHandler(setScheduleDropdown).getScheduleDropdown();
+        } else {
+            console.log('h4');
+            var param = $(this).attr('param');
+            BASEPARAM.equalTo=param;
+            filterpage('xx', true);
+        }
+    } else if (subtab == 'subOrder') {
+        var page = $(this).attr('page');
+        thisPage = page;
+        selPage = page;
+        filterpage('xx', true);
+        $("#subTabFlavourMixOrders").addClass('active');
+    } else {
+        var currentAttrValue = $(this).attr('href');
+        // Show/Hide Tabs
+        $('.tabs ' + currentAttrValue).show().siblings().hide();
+        $(this).parent('li').addClass('active').siblings().removeClass('active');
+        populateSheet(currentAttrValue);
+        // Change/remove current tab to active
+    }
+    hideDiv();
+    e.preventDefault();
+    e.stopPropagation();
+});
     
     var activetab='#tab1';
     function populateSheet(current) {
@@ -396,7 +385,7 @@ $('.tabs .tab-links a').on('click', function(e) {
     //Tabs
     var MixSheet="#Mixing";
     $('.tabs3 .tab-links3 a').on('click', function(e) {
-
+        console.log('BASEPARAM',BASEPARAM);
         var currentAttrValue3 = $(this).attr('href');
         MixSheet=currentAttrValue3;
         // Show/Hide Tabs
@@ -762,8 +751,12 @@ edit_flavour_mix_order=true;
       function formatDateDisplay(datems){
      try{
      if(datems&&datems!=""){
-      var now=new Date(datems);
-      
+       var num = parseInt(datems,10);
+       if(num<5000){
+       var now=new Date(datems);
+       }else{
+       var now=new Date(num);
+       }
       
       var day = ("0" + now.getDate()).slice(-2);
       var month = ("0" + (now.getMonth() + 1)).slice(-2);
@@ -957,13 +950,6 @@ edit_flavour_mix_order=true;
          html +='<tr>';
         }
         
-         if(!data[i].numLabelsBottles){
-         data[i].numLabelsBottles=0;
-         }
-         if(!data[i].numLabelsTubes){
-         data[i].numLabelsTubes=0;
-         }
-       
        
             html += '<td>'+i+'</td><td><div class="dropdown"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
            // if (data[i].final_status == 'Busy' || data[i].final_status == 'Completed') {
@@ -1013,7 +999,7 @@ edit_flavour_mix_order=true;
             html += '<option factory="Halifax" value="Halifax - Auto Machine 1 - Labelling only">Halifax - Auto Machine 1 - Labelling only</option>';
             html += '<option factory="Halifax" value="Halifax - Auto Machine 2 - Labelling only">Halifax - Auto Machine 2 - Labelling only</option>';
             html += '</select></td>';
-            data[i].priority=data[i].priority ? data[i].priority: ' ';
+            data[i].priority=data[i].priority == 0 ? data[i].priority: ' ';
             data[i].flavvalue=data[i].flavvalue ? data[i].flavvalue: ' ';
             data[i].VGval=data[i].VGval ? data[i].VGval: ' ';
             data[i].AGval=data[i].AGval ? data[i].AGval: ' ';
@@ -1532,7 +1518,7 @@ var EDITORDER=false;
           data[i].brand=data[i].brand ? data[i].brand: ' ';
         html += '<a class="dropdown-item" onclick="return menuClick(this);" href="#deleteMix' + data[i].batch + '">Delete</a>';
         html+=' </div></div></td>';
-        data[i].priority=data[i].priority ? data[i].priority: ' '; 
+        data[i].priority=data[i].priority == 0 ? data[i].priority: ' '; 
         html += '<td><button page="Mixing" batch="'+data[i].batch+'" onclick="moveUp(this)" id="moveUP"><i class="fa fa-arrow-up" aria-hidden="true"></i></button><button onclick="moveDown(this)" page="Mixing" batch="'+data[i].batch+'" id="moveDOWN"><i class="fa fa-arrow-down" aria-hidden="true"></i></button></td>';
         html+='<td>'+data[i].final_status+'</td><td>'+data[i].priority+'</td><td>'+data[i].batch+'</td><td>' + data[i].orderID + '</td><td>' + data[i].brand + '</td><td>' + data[i].productcode + '</td><td>' + data[i].productdescription + '</td><td>'+data[i].recipe.name+'</td>';
       
@@ -1670,7 +1656,7 @@ var EDITORDER=false;
         console.log(data);
         var html = '';
         var heads=['Row','Menu','Batch','Order Date','Started','QTY','Color','Color SKU','Color %','Mix Batch Code','Uncolored Premix Description','Uncolored Premix SKU','Colored Premix Description','Colored Premix SKU','Status','Completion Date','Notes','Location'];
-        var keys=['row','menu','batch','orderdate','starttime','QTY','Color.name','Color.sku','Color.val','mix_batch_code','premixdescr','premixSKU','premixdescrColored','premixSKUColored','final_status','CompletionDate','Notes','Location']
+        var keys=['row','menu','batch','orderdate','starttime','QTY','Color.name','Color.sku','Color.val','mixbatch','premixdescr','premixSKU','premixdescrColored','premixSKUColored','final_status','CompletionDate','Notes','Location']
         html += '<table class="table"><thead><tr>';
         for(var i=0;i<heads.length;i++){
           html+= '<th>'+heads[i]+'</th>';
@@ -1911,22 +1897,7 @@ google.script.run.withSuccessHandler(updateMachine).changeFactory(mixbatch,facto
          }else{
           html+='<tr bgcolor="#1BEF5B">'
          }
-         if(!data[i].numLabelsBottles){
-         data[i].numLabelsBottles=0;
-         }
-         if(!data[i].numLabelsTubes){
-         data[i].numLabelsTubes=0;
-         }
-         if(!data[i].packagingType){
-         data[i].packagingType={
-         name:0,
-         };
-         }
-         if(!data[i].boxname){
-         data[i].boxname={
-         name:0,
-         };
-         }
+       
             html += '<td><div class="dropdown"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
             if (data[i].final_status == 'Not Run') {
                 html += '<a class="dropdown-item" onclick="return menuClick(this);" href="#ProductionMoveNext' + data[i].batch + '">Line Item Move</a>';
@@ -1937,8 +1908,8 @@ google.script.run.withSuccessHandler(updateMachine).changeFactory(mixbatch,facto
             
             html += '<a class="dropdown-item" onclick="return menuClick(this);" href="#deleteProduction' + data[i].batch + '">Delete</a>';
             html += ' </div></div></td>';
-html += '<td><button page="Production" batch="'+data[i].batch+'" onclick="moveUp(this)" id="moveUP"><i class="fa fa-arrow-up" aria-hidden="true"></i></button><button onclick="moveDown(this)" page="Production" batch="'+data[i].batch+'" id="moveDOWN"><i class="fa fa-arrow-down" aria-hidden="true"></i></button></td>';
- data[i].priority=data[i].priority ? data[i].priority: ' ';
+            html += '<td><button page="Production" batch="'+data[i].batch+'" onclick="moveUp(this)" id="moveUP"><i class="fa fa-arrow-up" aria-hidden="true"></i></button><button onclick="moveDown(this)" page="Production" batch="'+data[i].batch+'" id="moveDOWN"><i class="fa fa-arrow-down" aria-hidden="true"></i></button></td>';
+             data[i].priority=data[i].priority == 0 ? data[i].priority: ' ';
             html += '<td>' + data[i].mixing_status + '</td><td>' + formatDateDisplay(data[i].orderdate) + '</td><td>' + data[i].batch + '</td><td>' + data[i].orderID + '</td><td>' + data[i].productcode + '</td><td>' + data[i].productdescription + '</td><td>' + data[i].mixbatch + '</td><td>' + data[i].priority + '</td><td>' + data[i].customer + '</td><td>' + data[i].brand + '</td><td>' + data[i].recipe.name + '</td>';
             html += '<td>' + data[i].flavour.name + '</td><td>' + data[i].bottles + '</td><td>' + data[i].btype + '</td><td>' + data[i].lid + '</td><td>' + data[i].packagingType.name + '</td><td>'+formatDateDisplay2(data[i].starttime)+'</td><td>' + formatDateDisplay2(data[i].CompletionDate) + '</td>';
              html += '<td>' + data[i].Completed + '</td><td>' + data[i].Location + '</td>';
@@ -2019,13 +1990,7 @@ html += '<td><button page="Production" batch="'+data[i].batch+'" onclick="moveUp
          }else{
           html+='<tr bgcolor="#1BEF5B">'
          }
-         if(!data[i].numLabelsBottles){
-         data[i].numLabelsBottles=0;
-         }
-         if(!data[i].numLabelsTubes){
-         data[i].numLabelsTubes=0;
-         }
-       
+     
             html += '<td><div class="dropdown"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
             if (data[i].final_status == 'Not Run') {
                 html += '<a class="dropdown-item" onclick="return menuClick(this);" href="#PrintingMoveNext' + data[i].batch + '">Line Item Move</a>';
@@ -2034,12 +1999,7 @@ html += '<td><button page="Production" batch="'+data[i].batch+'" onclick="moveUp
             html += ' </div></div></td>';
             html += '<td><button page="Printing" batch="'+data[i].batch+'" onclick="moveUp(this)" id="moveUP"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>';
             html += '<button onclick="moveDown(this)" page="Printing" batch="'+data[i].batch+'" id="moveDOWN"><i class="fa fa-arrow-down" aria-hidden="true"></i></button></td>';
-            if(!data[i].numLabelsBottles){
-            data[i].numLabelsBottles=0;
-            }
-            if(!data[i].numLabelsTubes){
-            data[i].numLabelsTubes=0;
-            }
+        
             html += '<td>' + data[i].production_status + '</td><td>' + formatDateDisplay(data[i].orderdate) + '</td><td>' + data[i].batch + '</td><td>' + data[i].numLabelsBottles + '</td><td>' + data[i].numLabelsTubes + '</td><td>' + data[i].expDate + '</td><td>' + data[i].orderID + '</td><td>' + data[i].productcode + '</td><td>' + data[i].productdescription + '</td><td>' + data[i].priority + '</td><td>' + data[i].customer + '</td><td>' + data[i].brand + '</td><td>' + data[i].recipe.name + '</td>';
             html += '<td>' + data[i].flavour.name + '</td><td>' + data[i].bottles + '</td><td>' + data[i].btype + '</td><td>' + data[i].lid + '</td><td>' + data[i].packagingType.name + '</td><td>' + data[i].botlabel + '</td><td>' + data[i].boxname.name + '</td><td>'+formatDateDisplay2(data[i].starttime)+'</td><td>' + formatDateDisplay2(data[i].CompletionDate) + '</td>';
             html += '<td>' + data[i].Completed + '</td><td>' + data[i].Location + '</td></tr>';
@@ -2112,12 +2072,7 @@ html += '<td><button page="Production" batch="'+data[i].batch+'" onclick="moveUp
          }else{
           html+='<tr bgcolor="#1BEF5B">'
          }
-         if(!data[i].numLabelsBottles){
-         data[i].numLabelsBottles=0;
-         }
-         if(!data[i].numLabelsTubes){
-         data[i].numLabelsTubes=0;
-         }
+  
        
             html += '<td><div class="dropdown"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
             if (data[i].final_status == 'Not Run') {
@@ -2128,7 +2083,7 @@ html += '<td><button page="Production" batch="'+data[i].batch+'" onclick="moveUp
             
              html += '<td><button page="Labelling" batch="'+data[i].batch+'" onclick="moveUp(this)" id="moveUP"><i class="fa fa-arrow-up" aria-hidden="true"></i></button>';
             html += '<button onclick="moveDown(this)" page="Labelling" batch="'+data[i].batch+'" id="moveDOWN"><i class="fa fa-arrow-down" aria-hidden="true"></i></button></td>';
-             data[i].priority=data[i].priority ? data[i].priority: ' ';
+             data[i].priority=data[i].priority == 0 ? data[i].priority: ' ';
             html += '<td>' + data[i].production_status + '</td><td>' +formatDateDisplay( data[i].orderdate) + '</td><td>' + data[i].batch + '</td><td>' + data[i].orderID + '</td><td>' + data[i].productcode + '</td><td>' + data[i].productdescription + '</td><td>' + data[i].priority + '</td><td>' + data[i].customer + '</td><td>' + data[i].brand + '</td><td>' + data[i].recipe.name + '</td>';
             html += '<td>' + data[i].flavour.name + '</td><td>' + data[i].bottles + '</td><td>' + data[i].btype + '</td><td>' + data[i].lid + '</td><td>' + data[i].packagingType.name + '</td><td>'+formatDateDisplay2(data[i].starttime)+'</td><td>' + formatDateDisplay2(data[i].CompletionDate) + '</td>';
             html += '<td>' + data[i].Completed + '</td><td>' + data[i].Location + '</td><td>' + data[i].machineL + '</td></tr>';
@@ -2197,13 +2152,7 @@ html += '<td><button page="Production" batch="'+data[i].batch+'" onclick="moveUp
          }else{
           html+='<tr bgcolor="#1BEF5B">'
          }
-         if(!data[i].numLabelsBottles){
-         data[i].numLabelsBottles=0;
-         }
-         if(!data[i].numLabelsTubes){
-         data[i].numLabelsTubes=0;
-         }
-        
+  
             html += '<td><div class="dropdown"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
             if (data[i].final_status == 'Not Run') {
                 html += '<a class="dropdown-item" onclick="return menuClick(this);" href="#PackagingMoveNext' + data[i].batch + '">Line Item Move</a>';
@@ -2272,15 +2221,9 @@ html += '<td><button page="Production" batch="'+data[i].batch+'" onclick="moveUp
         if(data!=''){
         for (var i = 0; i < data.length; i++) {
   if(!data[i].recipe){continue;}
-   if(!data[i].numLabelsBottles){
-         data[i].numLabelsBottles=0;
-         }
-         if(!data[i].numLabelsTubes){
-         data[i].numLabelsTubes=0;
-         }
-       
+ 
          
-          data[i].priority=data[i].priority ? data[i].priority: ' ';
+          data[i].priority=data[i].priority == 0 ? data[i].priority: ' ';
             html += '<tr><td><div class="dropdown"><button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button><div class="dropdown-menu" aria-labelledby="dropdownMenuButton">';
 
 
@@ -2659,7 +2602,7 @@ google.script.run.withSuccessHandler(buildQTYFormFromExisting).getSingleQTYData(
     //google.script.run.withSuccessHandler(newflavourSuccess).newBasicItem(BASEflavour, 'Flavours');
     obj.flavours[flavoursku]={
     sku:flavoursku,
-    val:val,
+    val:parseFloat(val),
     name:name,
     };
     }else{
@@ -2668,7 +2611,7 @@ google.script.run.withSuccessHandler(buildQTYFormFromExisting).getSingleQTYData(
     var val=$(special+'flavourAmount'+i).val()
     obj.flavours[flavoursku]={
     sku:flavoursku,
-    val:val,
+    val:parseFloat(val),
     name:name,
     };
     
@@ -3144,18 +3087,22 @@ return ret;
 
 var pagesSplit=false;
 var lastPage='';
+ 
+var largeData;
 function filterResult(rett){
-
-console.log(rett);
+ 
+console.log('rett',rett);
 var page=rett[0];
 var data=rett[1];
+largeData=data;
+  
 data=getSearchDates(data);
 if(pagesSplit==false){
  data=splitPages([data,page]);
 
 }
 
-var largeData;
+
 lastPage=page;
 
 if(page=='Orders'){
@@ -3186,7 +3133,8 @@ $("#updating").css("display", "none");
 
 function changeSplit(){
 pagesSplit=false;
-filterpage('xx',true);
+filterResult([selPage,largeData])
+//filterpage('xx',true);
 }
  var splitPAGES;
     var currPage;
@@ -3194,8 +3142,7 @@ filterpage('xx',true);
   
     var data=rett[0];
     var page=rett[1];
-largeData=data;
-   
+ 
     currPage=page;
     
     if(data.length==0){
@@ -4522,7 +4469,7 @@ searchItems.push([page,params]);
 
 searchItems.push([selPage,BASEPARAM]);
 LASTSEARCH=searchItems;
-console.log(searchItems);
+console.log('searching for',searchItems);
 
  google.script.run.withSuccessHandler(filterResult).searchFor(searchItems);
 
@@ -5375,8 +5322,9 @@ if (r == true) {
 }
 return false;
 }
+
 var htmlModalType;
-var modalclosed=true;
+//var modalclosed=true;
 var loopTimeout=0;
 function buildhtmlmodal(rett){
 $('.htmlMSGmodalbody').html('');
@@ -5386,6 +5334,7 @@ var data=rett[0];
 var type=rett[1];
 htmlModalType=type;
 var built='';
+console.log('rett',rett);
 switch (type){
     case 'backupAndRestore':
     built= buildbackupAndRestore(data);
@@ -5420,15 +5369,21 @@ switch (type){
     case 'PackagePrint':
     built= buildPackagePrint(data);
     break;
+    case 'Roundups':
+    built= buildRoundups(data);
+    break;
+    case 'globalFilter':
+    built= buildglobalFilter(data);
+    break;
   default:
 
   break;
 }
 $('.htmlMSGmodalbody').html(built);
-modalclosed=false;
+//modalclosed=false;
 $('#htmlMSGmodal').modal('show');
-$('.modal-backdrop').show();
-$('#htmlMSGmodal').show();
+ 
+//$('#htmlMSGmodal').show();
 
 
 
@@ -5937,7 +5892,7 @@ function buildMachinesModal(data){
 var html='';
 var dropdown='<option></option>';
 for(var i=0;i<data.length;i++){
-dropdown+='<option sku="'+data[i].sku+'" value="'+data[i].sku+'">'+data[i].name+'</option>';
+dropdown+='<option sku="'+data[i].id+'" value="'+data[i].id+'">'+data[i].name+'</option>';
 }
 html+='<div>';
 html+='<p>Please make sure the Machine fill levels follow the format: 10,20,32,35, etc... If a machine is active, but has no fill levels, then it will not be used in scheduling.</p>';
@@ -5954,7 +5909,7 @@ html+='<tr><td>'+data[i].name+'</td>';
 var status = data[i].status ? "ON" : "OFF";
 html+='<td>'+status+'</td>';
 html+='<td>'+data[i].fillLevels+'</td>';
-html+='<td><button   type="button" class="btn btn-primary" fillLevels="'+data[i].fillLevels+'" status="'+data[i].status+'"  sku="'+data[i].sku+'" name="'+data[i].name+'" onclick="editMachine(this)">Edit</button></td><td><button  type="button" class="btn btn-danger" sku="'+data[i].sku+'"   status="'+data[i].status+'"  name="'+data[i].name+'"  onclick="deleteMachine(this)">Delete</button></td></tr>'
+html+='<td><button   type="button" class="btn btn-primary" fillLevels="'+data[i].fillLevels+'" status="'+data[i].status+'"  sku="'+data[i].id+'" name="'+data[i].name+'" onclick="editMachine(this)">Edit</button></td><td><button  type="button" class="btn btn-danger" sku="'+data[i].id+'"   status="'+data[i].status+'"  name="'+data[i].name+'"  onclick="deleteMachine(this)">Delete</button></td></tr>'
 
 }
 html+='<tr><td></td><td></td><td></td><td></td><td><button class="btn btn-success" onclick="newMachine()">New Machine</button></td></tr>';
@@ -6002,15 +5957,16 @@ google.script.run.withSuccessHandler(refreshMachines).remove_item(sku,'Machines'
 
 function saveMachine(){
 var obj={
-sku:$("#machineopssku").val(),
+id:$("#machineopssku").val(),
 name:$("#machineopsname").val(),
 status:$("#machineopsactive").prop('checked'),
 fillLevels:$("#machineopsfillLevels").val(),
 }
-if(!obj.sku){
+if(!obj.id){
 alert('No SKU!');
 return false;
 }
+console.log('obj',obj);
 google.script.run.withSuccessHandler(refreshMachines).newBasicItem(obj, 'Machines');
 }
 
@@ -6326,6 +6282,7 @@ var obj={
 shiftTimes:$("#shifts"+days[i]).val(),
 breakTimes:$("#breaks"+days[i]).val(),
 status:status,
+day:days[i],
 }
 if(status){
 options += '"' + days[i] + '":' + JSON.stringify(obj) + ',';
@@ -6334,7 +6291,7 @@ options += '"' + days[i] + '":' + JSON.stringify(obj) + ',';
 
 }
 options += '}';
-
+console.log('options',options);
 google.script.run.withSuccessHandler(refreshScheduleView).saveBreaks(options);
 }
 
@@ -6372,9 +6329,9 @@ $('#'+name).show();
 
 function closemainmodal(){
 console.log('here');
-modalclosed = true;
-$('#htmlMSGmodal').hide();
-$('.modal-backdrop').hide();
+//modalclosed = true;
+$('#htmlMSGmodal').modal('toggle');
+//$('.modal-backdrop').removeClass( "show" );
 }
 
 
@@ -6510,5 +6467,73 @@ google.script.run.withSuccessHandler(refreshOrdersMSG).refreshOrderPC();
 function refreshOrdersMSG(msg){
 alert(msg);
 $("#updating").css("display", "none");
+}
+
+function getRoundups(){
+google.script.run.withSuccessHandler(buildhtmlmodal).getRoundups();
+
+};
+
+function buildRoundups(data){
+var html = '';
+html+='\
+<div style="margin:0 auto; width:500px;"><h2>Round Up Amounts</h2>';
+html+='<div  ><p> Regular: <input  class="form-control" id="roundupnic" value="'+data.nic+'"/></p>';
+html+='<p> CBD: <input  class="form-control" id="roundupcbd" value="'+data.cbd+'"/></p><div>';
+html+='<hr></div>\
+<div>\
+<button type="button" class="btn btn-success sarButton" onclick="saveRoundups()">Save Current</button>';
+return html;
+}
+
+function saveRoundups(){
+var obj ={
+nic:parseInt($("#roundupnic").val(),10),
+cbd:parseInt($("#roundupcbd").val(),10),
+
+}
+google.script.run.withSuccessHandler(refreshOrdersMSG).updateRoundups(obj);
+
+}
+
+function getglobalFilter(){
+google.script.run.withSuccessHandler(buildhtmlmodal).getglobalFilter();
+
+};
+
+function buildglobalFilter(data){
+var selectedDropdown  = '';
+for(var i = 0; i <7; i++){
+
+selectedDropdown+='<option value="'+i+'"' +(data.months == i ? 'selected' : '' ) + '>';
+if(i == 0){
+selectedDropdown+='All';
+}else if(i==1){
+selectedDropdown+='1 Month';
+}else{
+selectedDropdown+=i+' Months';
+}
+ 
+selectedDropdown+='</option>';
+
+}
+ 
+var html = '';
+html+='\
+<div style="margin:0 auto; width:500px;"><h2>Global Date Filter</h2>';
+html+='<div  ><p><select  class="form-control" type="date" id="globalFilterMonths">'+selectedDropdown+'</select></p>';
+html+='<hr></div>\
+<div>\
+<button type="button" class="btn btn-success sarButton" onclick="saveglobalFilter()">Save Current</button>';
+return html;
+}
+
+function saveglobalFilter(){
+var obj ={
+months:parseInt($("#globalFilterMonths").val(),10),
+ 
+}
+google.script.run.withSuccessHandler(refreshOrdersMSG).updateglobalFilter(obj);
+
 }
 </script>

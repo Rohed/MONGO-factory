@@ -39,15 +39,15 @@ try{
         return {LogData:LOGARR,USAGE:USAGE};
       }
     }
-  if(data.recipe.Color){
+  if(data.Color.sku){
     USAGE.Color = {
-      sku:data.recipe.Color.sku,
-      name:data.recipe.Color.name,
-      qty: data.QTY*10*data.recipe.Color.val,
+      sku:data.Color.sku,
+      name:data.Color.name,
+      qty: data.QTY*10*data.Color.val,
     };
-    data.used.push(['Color/', data.recipe.Color.sku, data.QTY*10*data.recipe.Color.val]);
-    LOGARR.push(['Color:',data.QTY*10*data.recipe.Color.val]);
-    var neg = fromRunningtoReserved('Color/' + data.recipe.Color.sku, data.QTY*10*data.recipe.Color.val);
+    data.used.push(['Color/', data.Color.sku, data.QTY*10*data.Color.val]);
+    LOGARR.push(['Color:',data.QTY*10*data.Color.val]);
+    var neg = fromRunningtoReserved('Color/' + data.Color.sku, data.QTY*10*data.Color.val);
     if (neg<0) {
       LOGARR = LOGARR.concat(returnData(data,neg))
       return {LogData:LOGARR,USAGE:USAGE};
@@ -146,11 +146,12 @@ try{
       
         data.QTY = newmixvol;
         data.tomixing = 'Sent';
+        var RU = getRoundups()[0];   
         if (data.Nico||data.Nicosalts) {
-            var rounded = Math.ceil(data.QTY / 5) * 5;
+            var rounded = Math.ceil(data.QTY / RU.nic) * RU.nic;
 
         } else {
-            var rounded = Math.ceil(data.QTY);
+            var rounded = Math.ceil(data.QTY / RU.cbd) * RU.cbd;
 
         }
       var order = base.getData('Orders/'+data.batch);
@@ -299,6 +300,10 @@ try{
                 name:'',
                 sku:'',
                 },
+                 boxname: {
+                name:'',
+                sku:'',
+                },
                 orderID: '',
                 fill: data.fill,
             };
@@ -322,7 +327,7 @@ try{
       mixing : 0,
       backtubed : 0,
     }
-    
+     LOGARR = LOGARR.concat(returnData(data,0))
     base.updateData('Orders/' + data.batch, dat1);
     LOGARR.push(['FAILED', e.message]);
     return {LogData:LOGARR,USAGE:USAGE};
@@ -453,7 +458,7 @@ try{
       mixing : 0,
       backtubed : 0,
     }
-    
+     LOGARR = LOGARR.concat(returnData(data,0))
     base.updateData('Orders/' + data.batch, dat1);
     LOGARR.push(['FAILED', e.message]);
     return {LogData:LOGARR,USAGE:USAGE};
@@ -496,6 +501,7 @@ function returnData(data,neg) {
         }
     }
     try{
+      
     var name = base.getData(data.used[data.used.length-1][0] + data.used[data.used.length-1][1]+'/name');
     }catch(e){
     var name ='none';
@@ -516,4 +522,9 @@ function returnData2(data,neg) {
     LOGARR.push(['WENT NEGATIVE', Math.abs(neg)+' - '+ data.used[data.used.length-1][0] + data.used[data.used.length-1][1]+' - '+name])
 
     return LOGARR;
+}
+
+function testgetName(){
+var data = base.getData( 'Labels/KOVICE1002L/name');
+Logger.log(data)
 }

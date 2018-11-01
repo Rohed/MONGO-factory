@@ -12,7 +12,7 @@ function testmachinestatus(){
     });
     
     allMachinesList = allMachinesList.filter( function (machine){
-    Logger.log(machine.status? 'yes':'no');
+ 
     return machine.status == true})
   }
   
@@ -31,23 +31,14 @@ function saveSchedule(dataPaginated, obj) {
   };
   try{
   
-//    for(var j = 0 ; j<dataPaginated.length;j++){
-//      for(var b = 0 ; b<dataPaginated[j].length;b++){
-//       if(dataPaginated[j][b].batch){ 
-//        if(dataPaginated[j][b].movedtoNext!=0){
-//          return 'Order '+dataPaginated[j][b].batch+' has already been started.';
-//        }
-//        }
-//        
-//      }
-//    }
+
   obj.id=obj.entryDate;
     var payload={ 
       'dataPaginated':JSON.stringify(dataPaginated),
       'obj':JSON.stringify(obj),
     };
 
-
+ 
     var params={
       method:"POST",
       "Content-Type":'application/json',
@@ -154,17 +145,7 @@ function DeleteSchedule(obj){
 
 }
 function insertNewSchedule(dataPaginated, obj){
-//  for(var j = 0 ; j<dataPaginated.length;j++){
-//    for(var b = 0 ; b<dataPaginated[j].length;b++){
-//    if(dataPaginated[j][b].batch){ 
-//      if(dataPaginated[j][b].movedtoNext!=0){
-//      return 'Order '+dataPaginated[j][b].batch+' has already been started.';
-//      }
-//      }
-//    }
-//    
-//  }
-  
+
   var msg= saveSchedule(dataPaginated, obj);
   Utilities.sleep(5000);
   var oldItem = base.getData('SchedulesReference/'+obj.entryDate);
@@ -473,7 +454,7 @@ function testrREMEVEO() {
 
 
 function getScheduleDropdown() {
-    var data = base.getData('Schedules Reference');
+    var data = base.getData('SchedulesReference');
     var list = JSONtoARR(data);
     var resp = [];
     list.map(function(item) {
@@ -486,9 +467,9 @@ function getScheduleDropdown() {
 
 function getScheduleData(id, page) {
     var ret = [];
-    var data = base.getData('Schedules Reference/' + id);
+    var data = base.getData('SchedulesReference/' + id);
 
-    var orders = JSONtoARR(data.Batches);
+    var orders = data.Batches;
     var pageData = base.getData(page);
 
     for (var i = 0; i < orders.length; i++) {
@@ -508,10 +489,11 @@ function getScheduleDataNearest(page) {
     now = now.setUTCHours(0,0,0,0).toString();
 
     var ret = [];
-    var data = base.getData('Schedules');
+    var schedules = base.getData('Schedules');
+    var data = {};
     var list = JSONtoARR(data);
-    if (data) {
-        var keys = Object.keys(data);
+    if (schedules) {
+        var keys = Object.keys(schedules);
         for (var i = 0; i < list.length; i++) {
             if (parseInt(keys[i], 10) >= (parseInt(now, 10)-(60*60*1000*5))) {
 
@@ -520,29 +502,29 @@ function getScheduleDataNearest(page) {
             }
 
         }
+        if(data){
 
-
-        var orders = JSONtoARR(data.Batches);
-        var pageData = base.getData(page);
-
-        var now2 = new Date();
-        var hours = now2.getHours() + 10;
-        var minutes = now2.getMinutes();
-
-        var time = Math.floor((((hours / 12) * 60) + minutes) / 5) * 30;
-        time=time.toString();
-        for (var i = 0; i < orders.length; i++) {
+          var orders = data.Batches;
+          var pageData = base.getData(page);
+          
+          var now2 = new Date();
+          var hours = now2.getHours() + 10;
+          var minutes = now2.getMinutes();
+          
+          var time = Math.floor((((hours / 12) * 60) + minutes) / 5) * 30;
+          time=time.toString();
+          for (var i = 0; i < orders.length; i++) {
             var slots = orders[i].slots;
             slots = slots.split(',');
             if (slots.indexOf(time) >= 0) {
-                if (pageData[orders[i].batch]) {
-                    ret.push(pageData[orders[i].batch]);
-                }
+              if (pageData[orders[i].batch]) {
+                ret.push(pageData[orders[i].batch]);
+              }
             }
-
+            
+          }
+          
         }
-       
-       
 
     }
     
@@ -551,11 +533,11 @@ function getScheduleDataNearest(page) {
 
 
 function getScheduleView() {
-    var breaks = base.getData('Schedules Breaks');
+    var breaks = base.getData('SchedulesBreaks');
     if (!breaks) {
         breaks = [];
     }
-    var data = base.getData('Schedules Reference');
+    var data = base.getData('SchedulesReference');
     var list = JSONtoARR(data);
     var resp = [];
     list.map(function(item) {
@@ -565,7 +547,7 @@ function getScheduleView() {
             batchList = Object.keys(Batches);
             batchList = batchList.join(', ');
         }
-        resp.push([item, item.id, item.date, item.name, item.type, batchList]);
+        resp.push([item, item.id, (item.date ? item.date : 'auto'), item.name, item.type, batchList]);
 
     });
     return [
@@ -576,7 +558,7 @@ function getScheduleView() {
 
 function saveBreaks(breaks) {
  
-        base.updateData('Schedules Breaks/', JSON.parse(breaks));
+        base.updateData('SchedulesBreaks', JSON.parse(breaks));
 
 }
 
@@ -601,7 +583,7 @@ function editSchedule(newItem, oldItem) {
         var name = {
             name: newItem.name,
         }
-        base.updateData('Schedules Reference/' + oldItem.id, name);
+        base.updateData('SchedulesReference/' + oldItem.id, name);
     }
     if (oldItem.date != newItem.date) {
         updateSchedulesFor(newItem, oldItem);
@@ -894,7 +876,7 @@ try{
   }else{
   var names=[];
    for(var i=0;i<opt.selected.length;i++){
-   names.push(base.getData('Schedules Reference/'+opt.selected[i].toString()+'/name'));
+   names.push(base.getData('SchedulesReference/'+opt.selected[i].toString()+'/name'));
    }
    if(names.length>1){
    name=names.join(', ');
@@ -1099,28 +1081,21 @@ function getTodaySchedule(){
   var botandbatchLarge = [];
   var date= new Date().setUTCHours(0,0,0,0);
   var dateSTR = date.toString();
-  var schedules = base.getData('Schedules');
+  var schedules = base.getData('Schedules/'+date);
   if(schedules){
-    var keys=Object.keys(schedules);
-    schedules = {};
-    for(var i=0;i<keys.length;i++){
-      var searchSTR  = keys[i];
-      if(parseInt(searchSTR,10)>=date && parseInt(searchSTR,10)<=date){
-        var item=base.getData('Schedules/'+searchSTR);
-        
-        if(item){
-          item.id=date;
-          var machineKeys=Object.keys(item.Machines);
-          for(var j=0;j<machineKeys.length;j++){
-            var machineTimes=item.Machines[machineKeys[j]];
+        var item=schedules;
+     
+          var machines= item.Machines;
+          for(var j=0;j<machines.length;j++){
+            var machineTimes=ARRtoJSON(machines[j].times,'times');
             var machineTimesKeys=Object.keys(machineTimes);  
-            var arrToPush=[date,machineKeys[j]];
+            var arrToPush=[date,machines[j].id];
             var botandbatch = [[1],[2]];
             for(var mt=0;mt<existingTimes.length;mt++){
               if(machineTimes[mt*5]){
-                var batch=Object.keys(machineTimes[mt*5]);
-                arrToPush.push(orders[batch[0]].orderID+'/'+batch[0]+' '+orders[batch[0]].productdescription);
-                botandbatch.push([batch[0],machineTimes[mt*5][batch[0]].bottles]);
+                var batch=machineTimes[mt*5].Batch;
+                arrToPush.push(orders[batch.batch].orderID+'/'+batch.batch+' '+orders[batch.batch].productdescription);
+                botandbatch.push([batch.batch,batch.bottles]);
               }else{
                 arrToPush.push('');
                 botandbatch.push([]);
@@ -1129,10 +1104,8 @@ function getTodaySchedule(){
             arr.push(arrToPush);
             botandbatchLarge.push(botandbatch)
           }
-          break;
-        }
-      }
-    }
+         
+    
   }
   
 
@@ -1155,20 +1128,20 @@ function getFromToSchedule(from,to){
   for(var i=0;i<keys.length;i++){
     var searchSTR  = keys[i];
     if(parseInt(searchSTR,10)>=from && parseInt(searchSTR,10)<=to){
-    var item=base.getData('Schedules/'+searchSTR);
+    var item=schedules[searchSTR];
     if(item){
-      item.id= keys[i];
-      var machineKeys=Object.keys(item.Machines);
-      for(var j=0;j<machineKeys.length;j++){
-      var machineTimes=item.Machines[machineKeys[j]];
+    
+      var machines= item.Machines;
+      for(var j=0;j<machines.length;j++){
+      var machineTimes=ARRtoJSON(machines[j],'times');
       var machineTimesKeys=Object.keys(machineTimes);  
-       var arrToPush=[ keys[i],machineKeys[j]];
+       var arrToPush=[ keys[i],machines[j].id];
        var botandbatch = [[1],[2]]; 
         for(var mt=0;mt<existingTimes.length;mt++){
           if(machineTimes[mt*5]){
-            var batch=Object.keys(machineTimes[mt*5]);
-            arrToPush.push(orders[batch[0]].orderID+'/'+batch[0]+' '+orders[batch[0]].productdescription);
-            botandbatch.push([batch[0],machineTimes[mt*5][batch[0]].bottles]);
+            var batch=machineTimes[mt*5].Batch;
+            arrToPush.push(orders[batch.batch].orderID+'/'+batch.batch+' '+orders[batch.batch].productdescription);
+            botandbatch.push([batch.batch,batch.bottles]);
           }else{
             arrToPush.push('');
             botandbatch.push([]);
@@ -1197,17 +1170,17 @@ function getSelectedSchedules(selected){
   var orders=base.getData('Production');
   var schedules=base.getData('Schedules');
   for(var s=0;s<selected.length;s++){
-    var item=base.getData('Schedules Reference/'+selected[s]);
-    var BatchKeys=Object.keys(item.Batches);
-    for(var b=0;b<BatchKeys.length;b++){
-      var BatchItem=item.Batches[BatchKeys[b]];
+    var item=base.getData('SchedulesReference/'+selected[s]);
+    var Batches= item.Batches;
+    for(var b=0;b<Batches.length;b++){
+      var BatchItem=Batches[b];
       var scheduleIDs=BatchItem.schedule_ID;
       scheduleIDs=scheduleIDs.split(',');
       for(var i=0;i<scheduleIDs.length;i++){
         active.push(parseInt(scheduleIDs[i],10))
        
       }
-     batches.push(BatchKeys[b]);
+     batches.push(BatchItem.batch);
     }
     
   }
@@ -1221,18 +1194,18 @@ function getSelectedSchedules(selected){
   var item=schedules[active[a].toString()];
     if(item){
     item.id=active[a];
-    var machineKeys=Object.keys(item.Machines);
-    for(var j=0;j<machineKeys.length;j++){
-      var machineTimes=item.Machines[machineKeys[j]];
+    var machines=item.Machines;
+    for(var j=0;j<machines.length;j++){
+      var machineTimes=ARRtoJSON(machines[j].times,'times');
       var machineTimesKeys=Object.keys(machineTimes);  
-      var arrToPush=[active[a],machineKeys[j]];
+      var arrToPush=[active[a],machines[j].id];
       var botandbatch = [[1],[2]]; 
       for(var mt=0;mt<existingTimes.length;mt++){
         if(machineTimes[mt*5]){
-          var batch=Object.keys(machineTimes[mt*5]);
-          if(batches.indexOf(batch[0])>=0){
-          arrToPush.push(orders[batch[0]].orderID+'/'+batch[0]+' '+orders[batch[0]].productdescription);
-           botandbatch.push([batch[0],machineTimes[mt*5][batch[0]].bottles]);
+          var batch= machineTimes[mt*5].Batch;
+          if(batches.indexOf(batch.batch)>=0){
+          arrToPush.push(orders[batch.batch].orderID+'/'+batch.batch+' '+orders[batch.batch].productdescription);
+           botandbatch.push([batch.batch,batch.bottles]);
           }else{
            arrToPush.push('');
            botandbatch.push([]);
@@ -1261,7 +1234,7 @@ function fillArray(len) {
 }
 function testgetPREV(){
 
-GetSchedulePreview(1527724800000);
+GetSchedulePreview(1539129600000);
 }
 function GetSchedulePreview(date){
   var ID = new Date(date).setUTCHours(0,0,0,0).toString();
@@ -1330,16 +1303,16 @@ function FormatScheduleForDate(date){
 
   var item=base.getData('Schedules/'+date);
   if(item){
-    item.id=date;
-    var machineKeys=Object.keys(item.Machines);
-    for(var j=0;j<machineKeys.length;j++){
-      var machineTimes=item.Machines[machineKeys[j]];
+    
+    var machines= item.Machines;
+    for(var j=0;j<machines.length;j++){
+      var machineTimes=ARRtoJSON(machines[j].times,'times');
       var machineTimesKeys=Object.keys(machineTimes);  
-      var arrToPush=[machineKeys[j]];
+      var arrToPush=[machines[j].id];
       for(var mt=0;mt<existingTimes.length;mt++){
         if(machineTimes[mt*5]){
-          var batch=Object.keys(machineTimes[mt*5]);
-          arrToPush.push(batch[0])
+          var batch=machineTimes[mt*5].Batch;
+          arrToPush.push(batch.batch)
         }else{
           arrToPush.push('');
         }

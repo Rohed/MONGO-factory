@@ -2,7 +2,7 @@ function Base(SERVERURL) {
 
     this.url = SERVERURL;
 
-    this.getData = function(path, params) {
+    this.getData = function(path, options) {
         var params = {
             method: "GET",
             "Content-Type": 'application/json',
@@ -10,10 +10,17 @@ function Base(SERVERURL) {
              
         }
 
-        var url = SERVER_URL + '?'+formQueryFromPath(path)+formQueryFromParams(params) ;
+        var url =  this.url + '?'+formQueryFromPath(path)+formQueryFromParams(options) ;
         var response = UrlFetchApp.fetch(url, params).getContentText();
-         Logger.log("GET: "+response);
-        return JSON.parse(response);
+        // Logger.log("GET: "+response);
+         try{
+         JSON.parse(response)
+         return JSON.parse(response);
+         }catch(e){
+         var msg = e;
+         return response
+         }
+      
     }
 
     this.setData = function(path, data) {
@@ -27,9 +34,9 @@ function Base(SERVERURL) {
             'payload': payload
         }
 
-        var url = SERVER_URL + '?'+formQueryFromPath(path)
+        var url =  this.url + '?'+formQueryFromPath(path)
         var response = UrlFetchApp.fetch(url, params).getContentText();
-        Logger.log("SET: "+response);
+       // Logger.log("SET: "+response);
     }
 
     this.updateData = function(path, data) {
@@ -42,9 +49,9 @@ function Base(SERVERURL) {
             muteHttpExceptions: true,
             'payload': payload
         }
-        var url = SERVER_URL + '?'+formQueryFromPath(path)
+        var url =  this.url + '?'+formQueryFromPath(path)
         var response = UrlFetchApp.fetch(url, params).getContentText();
-        Logger.log("Update: "+response);
+    Logger.log("Update: "+response);
     }
     this.removeData = function(path) {
         var params = {
@@ -53,9 +60,9 @@ function Base(SERVERURL) {
             muteHttpExceptions: true,
 
         }
-                var url = SERVER_URL + '?'+formQueryFromPath(path)
+                var url =  this.url + '?'+formQueryFromPath(path)
         var response = UrlFetchApp.fetch(url, params).getContentText();
-        Logger.log("Remove: "+response);
+       // Logger.log("Remove: "+response);
     }
 
 }
@@ -65,12 +72,14 @@ function formQueryFromPath(path) {
     var splitPath = path.split('/');
     var id = '';
 
-    var query = splitPath[0];
+    var query = 'path='+splitPath[0];
 
     if (splitPath[1]) {
-        query += 'id=' + splitPath[1];
+        query += '&id=' + splitPath[1];
     }
-
+ if (splitPath[2]) {
+        query += '&id2=' + splitPath[2];
+    }
     return query;
 }
 
@@ -93,3 +102,4 @@ function formQueryFromParams(params) {
 
     return query;
 }
+

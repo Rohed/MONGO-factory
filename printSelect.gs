@@ -146,7 +146,9 @@ function printShippingNote(data,x){
     for(var j=0;j<list.length;j++){
       
       if(data[i]==list[j].PRINTCODE){
-        
+        if(!packagingData[list[j].batch]){
+        return list[j].batch +" Not found in Packaging.";
+        }
         //        if(list[j].SHIPPINGCODE){
         //        continue;
         //        }
@@ -251,7 +253,7 @@ function printShippingNote(data,x){
   Logger.log(SS.getUrl());
   var dat={
     SHIPPINGCODE:SHIPPINGCODE,
-    dateshipped:formattedDate,
+    dateshipped:new Date().getTime(),
     shipping_status:'Shipped',
   };
   for(var i=0;i<batches.length;i++){
@@ -288,14 +290,7 @@ function printOrdersBatches(SELECTED){
           data[i].packagingType.name = '';
         }
       }
-      if(data[i].final_status == "started"){
-        data[i].final_status = "Started";
-      }else if(data[i].final_status == "Completed"){
-        data[i].final_status =="Completed"
-        
-      }else{
-        data[i].final_status =="Not Run"
-      }
+       
       
       //        data.mixing_status = 0;
       //        data.production_status = 0;

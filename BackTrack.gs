@@ -46,7 +46,7 @@ function fromProduction(batch, bottles) {
   var tominusP = order.premixed;
   var premix = getPremixSKU(order,false);
   var premixColored = getPremixSKU(order,true);
-  var forColored = order.recipe.Color ? true : false;
+  var forColored = order.Color.sku ? true : false;
   var volume = bottles* order.fill/ 1000;
   LOGARR.push(['Volume: ' , volume]);
   LOGARR.push(['tominusP: ' , tominusP]);
@@ -93,7 +93,7 @@ function fromProduction(batch, bottles) {
   }
   if(tomix>0 && volume>0){
    LOGARR.push(['Volume: ' , volume]);
-    if(mixingData.movedtoNext != 1){
+    if(mixingData.final_status != 'Completed'){
       var datMix = {
         POvolume:volume,
         POMARKED:true,
@@ -135,7 +135,7 @@ function fromProduction(batch, bottles) {
      var labelingData = base.getData('Labelling/' + batch);
      var removedFromPrinting = true;
     if (printData && !labelingData) {
-        if (printData.movedtoNext == 0) {
+        if (printData.final_status == "Not Run") {
             var label = order.botlabelsku;
        
             var packData = getPackagingData(printData.packagingType, removeFromProduction, order.boxname.sku)
@@ -223,7 +223,7 @@ function fromProduction(batch, bottles) {
    var removedFromLabelling=true;
     if (labelingData) {
         if (!removedFromPrinting) {
-            if (labelingData.movedtoNext == 0) {
+            if (labelingData.final_status == "Not Run") {
                 var label = order.botlabelsku;
                 labelingData.bottles = labelingData.bottles - removeFromProduction;
                 base.updateData('Labelling/' + batch, labelingData);
@@ -278,7 +278,7 @@ function fromProduction(batch, bottles) {
     var packagingData = base.getData('Packaging/' + batch);
     if (packagingData) {
        
-        if (packagingData.movedtoNext == 0) {
+        if (packagingData.final_status == "Not Run") {
             var origbottles = packagingData.bottles;
             packagingData.bottles = origbottles - removeFromProduction;
             LOGARR.push(['New in Packaging: ', packagingData.bottles]);
@@ -357,7 +357,7 @@ var USAGE ={};
     var removeFromProduction = ORIGBOTTLES - bottles;
     var packagingData = base.getData('Packaging/' + batch);
     if (packagingData) {
-        if (packagingData.movedtoNext == 0) {
+        if (packagingData.final_status == "Not Run") {
             var origbottles = packagingData.bottles;
             packagingData.bottles = origbottles - removeFromProduction;
             LOGARR.push(['New in Packaging: ', packagingData.bottles]);
@@ -485,7 +485,7 @@ function updateOrder(batch, bottles, sheet,originalItem) {
     }
     //REVERSE DELETION
 function TESTREVERSEINFO() {
-    getBatchInfo(['901963']);
+    getBatchInfo(['916107'],'reverse');
 }
 
 
@@ -512,7 +512,7 @@ function getBatchInfo(batches,key) {
     batches=batches.concat(topush);
     var rett = [];
     for (var i = 0; i < sheets.length; i++) {
-        var raw = base.getData(sheets[i]);
+        //var raw = base.getData(sheets[i]);
         // var list=JSONtoARR(raw);
         for (var j = 0; j < batches.length; j++) {
           var suf2 = batches[j].substr(-2);
@@ -536,15 +536,10 @@ function getBatchInfo(batches,key) {
                 }
                 }
             }
-            var existsinRaw = raw[batches[j]];
+            var existsinRaw = base.getData(sheets[i]+'/'+batches[j]);
             if (existsinRaw) {
-                if (existsinRaw.final_status == 0 || existsinRaw.final_status == null) {
-                    existsinRaw.final_status = 'Not Run';
-                }
-                if (existsinRaw.movedtoNext == 'Busy') {
-                    existsinRaw.final_status = 'Busy';
-                }
-                rett[existsinRett].push([existsinRaw.final_status, existsinRaw.movedtoNext]);
+              
+                rett[existsinRett].push([existsinRaw.final_status, existsinRaw.final_status]);
             } else {
                 rett[existsinRett].push(['N/A', false]);
             }
@@ -559,16 +554,16 @@ deleteAndReverse( getBatchInfo(['913768'])[0],'reverse')
 function deleteAndReverse(data, key) {
        var sheets = ['Packaging', 'Labelling', 'Printing', 'Production', 'MixingTeam', 'Orders'];
     //  var sheetStatus=['final_status','mixing_status','printing_status','labelling_status','packaging_status'];
-    var orders = base.getData('Orders');
+  //  var orders = base.getData('Orders');
     for (var i = 0; i < sheets.length; i++) {
-        var raw = base.getData(sheets[i]);
+       // var raw = base.getData(sheets[i]);
         for (var j = 0; j < data.length; j++) {
             var item = data[j];
-            var itemRaw = orders[data[j][0]];
+            var itemRaw = base.getData('Orders/'+data[j][0]); 
             if (sheets[i] == 'MixingTeam') {
-                var sheetItem = JSONtoARR(raw);
+                var sheetItem = JSONtoARR(base.getData(sheets[i]));
             } else {
-                var sheetItem = raw[data[j][0]];
+                var sheetItem = base.getData(sheets[i]+'/'+data[j][0]);
             }
             reverseLineItemMove(item, itemRaw, sheetItem,sheets[i],key);
         }
@@ -919,7 +914,7 @@ Logger.log(sheetItem);
               var Batches =[];
              }
                 if (Batches.indexOf(sheetItem[0]) != -1) {
-                    MixingGroups.push([item[m].Batches[sheetItem[0]], item[m].movedtoNext, item[m]])
+                    MixingGroups.push([item[m].Batches[sheetItem[0]], item[m].final_status, item[m]])
                 }
             }
             for (var m = 0; m < MixingGroups.length; m++) {
@@ -1071,7 +1066,7 @@ Logger.log(sheetItem);
           
           }else{
             var data= {
-              final_status:0,
+              final_status:"Not Run",
               starttime: 0,
               started: 0,
             }
@@ -1085,11 +1080,11 @@ Logger.log(sheetItem);
             data.premixed = 0;
             data.mixing = 0;
             data.backtubed = 0;
-            data.mixing_status = 0;
-            data.production_status = 0;
-            data.printing_status = 0;
-            data.labeling_status = 0;
-            data.packaging_status = 0;
+            data.mixing_status = "";
+            data.production_status = "";
+            data.printing_status = "";
+            data.labeling_status = "";;
+            data.packaging_status = "";
               data.wentNegative=false;
                LogRTransaction(sheetItem[0]);
               base.updateData('Orders/' + sheetItem[0],data);

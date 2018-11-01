@@ -1,5 +1,5 @@
 function generatePremixBrandUnbrand(){
-  var PC=base.getData('References/ProductCodes');
+  var PC=base.getData('References');
   var PCList=JSONtoARR(PC);
   var sheets=['PremixesTypes','UnbrandedTypes','BrandedTypes'];
   var toCreatePremix=[];

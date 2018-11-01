@@ -1,15 +1,17 @@
 function newBasicItem(name, page) {
-Logger.log(page);
-     var LOGDATA = {
+ 
+ try{ 
+ 
+      var LOGDATA = {
         status: true,
         msg: '',
         action: 'New Item',
-   
+        batch: 'New '+page,
         page: 'Functions',
         user: Session.getActiveUser().getEmail(),
         data: new Array()
     };
- try{   if (page == 'Flavours') {
+ if (page == 'Flavours') {
     
         var sku = 'FLAV' + getRandom() + name.substr(0, 1).toUpperCase();
       LOGDATA.batch=name;
@@ -94,7 +96,7 @@ Logger.log(page);
         LOGDATA.batch=dbname;
          LOGDATA.data.push(['New Recipe',dbname]);
     }else if (page == 'Machines') {
-       base.updateData('Machines/'+name.sku,name);
+       base.updateData('Machines/'+name.id,name);
          LOGDATA.data.push(['New Machine',name.name]);
     }else if (page == 'FillLevels') {
        base.updateData('FillLevels/'+name.sku,name);
@@ -106,8 +108,10 @@ return 'success';
 }catch(e){
   LOGDATA.status=false;
   LOGDATA.data.push(['Failed',e.message]);
-  logItem(LOGDATA);
-return e.message;}
+ logItem(LOGDATA);
+return e.message;
+
+}
 }
 function newFlavoursArray(arr){
   var LOGDATA = {
@@ -195,58 +199,6 @@ function generateForSingleCustomer(name) {
 
 
 
-
-function generateForSingleBottle(name) {
-
-    //Unbranded
-
-    var recipes = getRecipeDropdown();
-    var flavours = getFlavourDropdown();
-
-    var options = '{';
-    for (var i = 0; i < flavours.length; i++) {
-        var lev1 = '';
-        for (var j = 0; j < recipes.length; j++) {
-            var lev2 = '';
-        
-            var bsize = name.replace(/\D/g, '');
-           
-          
-          if(recipes[j][3]=='nic'){
-            var unbranded = "GBVCO TPD " + flavours[i] + " " +recipes[j][1]  + " " + recipes[j][2]+ " " + bsize;
-          }else{
-            var unbranded = "CBD GBVCO TPD " + flavours[i] + " " + recipes[j][1]  + " " + recipes[j][2] + " " + bsize;
-          }
-            var item = {
-                "sku": 'UNB' + getRandom() + flavours[i].substr(0, 1),
-                "name": unbranded,
-                "Running": 0,
-                "Reserved": 0,
-                "Completed": 0,
-            };
-
-            lev2 += '"' + unbranded + '":' + JSON.stringify(item) + ',';
-
-
-
-
-            lev1 += lev2;
-        }
-        options += lev1;
-    }
-
-    options += '}';
-
-    var obj = JSON.parse(options);
-
-
-    base.updateData('UnbrandedTypes', obj);
-
-
-
-
-}
-
 function generateForSingleFlavourMix(obj){
 if(!obj.sku){
 obj.sku='FLAVCU'+getRandom();
@@ -296,7 +248,7 @@ function generateForSingleBrand2(prod,descr) {
     
     base.updateData('BrandedTypes/'+item.sku, item);
     LOGARR.push(['Generated braned type:',item.sku]);
-    var fullProd = base.getData('References/ProductCodes/'+prod);
+    var fullProd = base.getData('References/'+prod);
     if(fullProd.packagingType){
       if(fullProd.packagingType.sku != ''){
         
@@ -329,12 +281,13 @@ function generateForSingleBrand2(prod,descr) {
     
   }else{
     
-    var fullProd = base.getData('References/ProductCodes/'+prod)
+    var fullProd = base.getData('References/'+prod)
     
       if(fullProd.packagingType){
       if(fullProd.packagingType.sku != ''){
         
         var link=fullProd.linkedBB;
+        if(link){
         var exists2=base.getData('BrandedTypes/'+link );
         if(!exists2){
           var sku=''
@@ -353,7 +306,7 @@ function generateForSingleBrand2(prod,descr) {
           
         }
         
-        
+        }
       }
       
     }
@@ -377,7 +330,7 @@ function generateForSingleBrand3(prod,descr) {
   
   
   base.updateData('BrandedTypes/'+item.sku, item);
-  var link=base.getData('References/ProductCodes/'+prod+'/linkedBB');
+  var link=base.getData('References/'+prod+'/linkedBB');
   
   
 if(link!=0){
@@ -400,51 +353,6 @@ if(link!=0){
 
   
 }
-function generateForSingleUnbranded(recipe,flavour,bsize) {
-
-    // unbranded
-
-    var options = '{';
-
-      
-            var lev3 = '';
-
-       
-                if(recipe.type=='nic'){
-                 var unbranded = "GBVCO TPD " + flavour + " " +recipe.ratio  + " " +recipe.nic+" "+bsize;
-                }else{
-                 var unbranded = "CBD GBVCO TPD " + flavour + " " +recipe.ratio  + " " +recipe.cbd +" "+bsize;
-                }
-        
-                var exists=base.getData('UnbrandedTypes/'+unbranded);
-                if(!exists){
-                var item = {
-                    "sku": 'UNB' + getRandom() + flavour.substr(0, 1).toUpperCase(),
-                    "name": unbranded,
-                    "Running": 0,
-                    "Reserved": 0,
-                    "Completed": 0,
-                };
-
-                lev3 += '"' + unbranded + '":' + JSON.stringify(item) + ',';
-              }
-            
-           
-    
-    options += lev3;
-
-
-    options += '}';
-
-    var obj = JSON.parse(options);
-
-    base.updateData('UnbrandedTypes', obj);
-
-
-
-
-};
-
 function generateForSingleLid(name) {
     var dat1 = {
         sku: 'LID' + getRandom() + name.substr(0, 1),
@@ -527,95 +435,7 @@ function generateForSingleRecipe(item) {
 }
 
 
-    //Premixes
-
-/*    var flavours = getFlavourDropdown();
-    var bottletypes = getBottlesDropdown();
-    var lids = getLidDropdown();
-    var packagings = getPackagingDropdown();
-    var customers = getCustomerDropdown();
-    var brands = getBrandDropdown();
-*/
- /*   var options = '{';
-    for (var i = 0; i < flavours.length; i++) {
-    
-        var lev1 = '';
-        if(name.type=='nic'){
-        var premix = "GBVCO TPD Premix " + flavours[i] + " " + name.ratio + " " + name.nic;
-        }else{
-        var premix = "CBD GBVCO TPD Premix " + flavours[i] + " " + name.ratio + " " + name.cbd;
-        }
-        
-        var item = {
-            "sku": 'PRE' + getRandom() + flavours[i].substr(0, 1).toUpperCase(),
-            "name": premix,
-            "Running": 0,
-            "Reserved": 0,
-            "Completed": 0,
-        };
-
-        lev1 += '"' + premix + '":' + JSON.stringify(item) + ',';
-
-
-        options += lev1;
-    }
-    options += '}';
-    Logger.log(options);
-
-    var obj = JSON.parse(options);
-
-    base.updateData('PremixesTypes', obj);
-
-
-
-
-    //Unbranded
-
-    var options = '{';
-    for (var i = 0; i < flavours.length; i++) {
-        var lev1 = '';
-
-        var lev2 = '';
-        for (var k = 0; k < bottletypes.length; k++) {
-          
-            
-            var bsize = bottletypes[k].replace(/\D/g, '');
-            
-               if(name.type=='nic'){
-                 var unbranded = "GBVCO TPD " + flavours[i] + " " + name.ratio + " " + name.nic + " " + bsize;
-                }else{
-                 var unbranded = "CBD GBVCO TPD " + flavours[i] + " " + name.ratio + " " + name.cbd + " " + bsize;
-                }
-            var item = {
-                "sku": 'UNB' + getRandom() + flavours[i].substr(0, 1),
-                "name": unbranded,
-                "Running": 0,
-                "Reserved": 0,
-                "Completed": 0,
-            };
-
-            lev2 += '"' + unbranded + '":' + JSON.stringify(item) + ',';
-
-
-
-        }
-        lev1 += lev2;
-
-        options += lev1;
-    }
-
-    options += '}';
-
-    var obj = JSON.parse(options);
-
-
-    base.updateData('UnbrandedTypes', obj);
-
-
-
-*/
-    //Branded
-
+ 
 
 function generateForSingleUnbrand2(prod,descr){
 var exists=base.getData("UnbrandedTypes/"+prod);
